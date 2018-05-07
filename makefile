@@ -1,17 +1,37 @@
-IDIR =./include
+IDIR=./include
 CC=gcc
 CFLAGS=-Wall -g
 
 ODIR=./src/obj
-LDIR =./lib
+LDIR=./lib
+BDIR=./bin
 
 LIBS=-lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lSDL2_net
 
-_DEPS = header.h
-DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+MKDIR_P=mkdir -p
 
-_OBJ = game.o extra.o
-OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+all: directories game
+
+# Directories that need to exist (that are not in the repository) are created here
+directories: $(ODIR) $(LDIR) $(BDIR)
+
+$(ODIR):
+	$(MKDIR_P) $(ODIR)
+
+$(LDIR):
+	$(MKDIR_P) $(LDIR)
+
+$(BDIR):
+	$(MKDIR_P) $(BDIR)
+# End directories
+
+# All header files that need to be compiled go here
+_DEPS=header.h
+DEPS=$(patsubst %,$(IDIR)/%,$(_DEPS))
+
+# All object files (which correspond to compiled .c files, duh) go here
+_OBJ=tds.o extra.o
+OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
 $(ODIR)/%.o:./src/%.c $(DEPS)
@@ -20,7 +40,7 @@ $(ODIR)/%.o:./src/%.c $(DEPS)
 game: $(OBJ)
 	gcc -o ./bin/$@ $^ $(CFLAGS) $(LIBS)
 
-.PHONY: clean
+.PHONY: clean directories
 
 clean:
 	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
