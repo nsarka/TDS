@@ -1,15 +1,14 @@
 # TDS v1.0
 
 To compile, make sure you have MinGW installed as
-well as MinGW development libraries (32-bit) for:
-	- SDL2,
-	- SDL2_image,
-	- SDL2_mixer,
-	- SDL2_net,
-	- SDL2_ttf
+well as MinGW development libraries (32-bit) for:<br>
+* SDL2<br>
+* SDL2_image<br>
+* SDL2_mixer<br>
+* SDL2_net<br>
+* SDL2_ttf<br>
 
-Then run:
-	- make
+Then run:<br>
+* make
 
-The game.exe will be placed in the ./bin folder
-
+Game.exe will be placed in the ./bin folder
