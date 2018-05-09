@@ -1,6 +1,6 @@
 /*
 	** TDS v1.0 **
-	By Nick Sarka
+	By Nick Sarka and Drew Dimmick
 	Copyright 2018
 */
 
