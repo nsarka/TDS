@@ -11,4 +11,8 @@ well as MinGW development libraries (32-bit) for:<br>
 Then run:<br>
 * make
 
-Game.exe will be placed in the ./bin folder
+Game.exe will be placed in the ./bin folder<br>
+
+Base art courtesy https://finalbossblues.itch.io/pixel-shooter-towers-asset-pack<br>
+
+Credit for art not included in that link goes to Drew Dimmick.
