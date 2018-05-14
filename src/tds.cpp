@@ -14,6 +14,8 @@
 #include "SDL2/SDL_mixer.h"
 #include "SDL2/SDL_net.h"
 
+#include "../include/timer.h"
+
 using namespace std;
 
 const int SCREEN_WIDTH = 800;
@@ -103,6 +105,8 @@ void Events() {
 void Loop(){
 
     while(!quit) {
+		//Timer tmer;
+		// int start_time = tmer.start();
         //Events:
         Events();
 
@@ -118,6 +122,10 @@ void Loop(){
         SDL_RenderFillRect(renderer, &player);
 
         SDL_RenderPresent(renderer);
+
+		// int end_time = tmer.end()
+		// int difference = end - start
+		// if(difference < 60 fps) then sleep 60 - difference
 
     }
 
