@@ -137,13 +137,15 @@ int main( int argc, char* args[] ) {
         return -1;
     }
 
+	Timer t;
+
     while(!quit) {
         handleEvents();
         update();
         render();
 
         // Framerate limit
-		
+		t.limitFps(FPS);
     }
 
     cleanUp();

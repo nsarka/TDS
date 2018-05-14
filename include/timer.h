@@ -18,6 +18,8 @@ class Timer {
         bool isStarted();
         bool isPaused();
 
+        void limitFps(int fps);
+
     private:
         //The clock time when the Timer is started
         unsigned int startTicks;

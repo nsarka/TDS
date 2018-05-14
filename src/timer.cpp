@@ -90,3 +90,7 @@ bool Timer::isStarted(){
 bool Timer::isPaused(){
     return paused;
 }
+
+void Timer::limitFps(int fps) {
+
+}
