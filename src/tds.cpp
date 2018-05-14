@@ -16,8 +16,8 @@
 
 using namespace std;
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 1024;
+const int SCREEN_HEIGHT = 768;
 const int FPS = 60;
 
 bool quit = false;
@@ -29,12 +29,12 @@ SDL_Rect player = {0, 0, 10, 10};
 
 int init() {
     if( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
-        cout<<"SDL could not be initialized! SDL_Error: "<<SDL_GetError();
+        cout << "SDL could not be initialized! SDL_Error: " << SDL_GetError() << endl;
         return 1;
     }
 
 	window = SDL_CreateWindow(
-		"SDL Tutorial",
+		"Game",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
 		SCREEN_WIDTH,
@@ -42,89 +42,84 @@ int init() {
 		SDL_WINDOW_SHOWN);
 
 	if( window == NULL ) {
-		printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
+        cout << "Window could not be created! SDL_Error: " << SDL_GetError() << endl;
 		return -1;
 	}
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
 	return 0;
 }
 
-void Events() {
-
+void handleEvents() {
     SDL_Event event;
 
-    while(SDL_PollEvent( &event ) != 0) {
-
+    while( SDL_PollEvent( &event ) != 0 ) {
         //User requests quit
         if( event.type == SDL_QUIT ) {
             quit = true;
         }
 
-        if(event.type == SDL_MOUSEMOTION) {
+        if( event.type == SDL_MOUSEMOTION ) {
             player.x = event.motion.x;
             player.y = event.motion.y;
         }
 
-        else if(event.type == SDL_KEYDOWN) {
+        else if( event.type == SDL_KEYDOWN ) {
 
             //Select surfaces based on key press
             switch( event.key.keysym.sym ) {
                 case SDLK_UP:
-                cout<<"Pfeiltaste nach oben wurde gedrückt!"<<endl;
+                cout << "Up key" << endl;
                 break;
 
                 case SDLK_DOWN:
-                cout<<"Pfeiltaste nach unten wurde gedrückt!"<<endl;
+                cout << "Down key" << endl;
                 break;
 
                 case SDLK_LEFT:
-                cout<<"Pfeiltaste nach links wurde gedrückt!"<<endl;
+                cout << "Left key" << endl;
                 break;
 
                 case SDLK_RIGHT:
-                cout<<"Pfeiltaste nach rechts wurde gedrückt!"<<endl;
+                cout << "Right key" << endl;
                 break;
 
                 case SDLK_ESCAPE:
-                quit = true;
+                cout << "Escape key" << endl;
                 break;
 
                 default:
-                cout<<"Irgendeine Taste wurde gedrückt"<<endl;
+                cout << "Default key??" << endl;
                 break;
             }
         }
     }
 }
 
-void Loop(){
-
-    while(!quit) {
-        //Events:
-        Events();
-
-
-		if (SDL_RenderClear(renderer)!=0) {
-            cout<<"Fehler: "<<SDL_GetError()<<endl;
-        }
-
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        SDL_RenderFillRect(renderer, &player);
-
-        SDL_RenderPresent(renderer);
-
-    }
+void update() {
 
 }
 
-void Cleanup(){
+void render() {
+    if( SDL_RenderClear(renderer) != 0 ) {
+        cout << "Error: " << SDL_GetError() << endl;
+    }
 
+    // Reset screen by drawing black onto it
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
+    // Set new draw color to red and draw player rect
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_RenderFillRect(renderer, &player);
+
+    // Draw renderer
+    SDL_RenderPresent(renderer);
+}
+
+void cleanUp() {
     SDL_DestroyRenderer(renderer);
     renderer = NULL;
 
@@ -132,17 +127,23 @@ void Cleanup(){
     window = NULL;
 
     SDL_Quit();
-
 }
 
-int main( int argc, char* args[] ){
-
-    if(init() != 0){
-        cerr<<"Ein Fehler ist bei der Initialisierung aufgetreten!"<<endl;
+int main( int argc, char* args[] ) {
+    if( init() != 0 ) {
+        cerr << "Could not initialize SDL2" << endl;
+        return -1;
     }
 
-    Loop();
+    while(!quit) {
+        handleEvents();
+        update();
+        render();
 
-    Cleanup();
+        // Framerate limit
+
+    }
+
+    cleanUp();
     return 0;
 }
