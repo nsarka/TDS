@@ -12,7 +12,7 @@ class Timer {
         void unpause();
 
         //Gets the Timer's time
-        unsigned int getTick();
+        unsigned int getTicks();
 
         //Checks status of Timer
         bool isStarted();
