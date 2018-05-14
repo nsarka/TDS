@@ -4,8 +4,7 @@
 	Copyright 2018
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
 
 #include "windows.h"
 
@@ -16,7 +15,10 @@
 #include "SDL2/SDL_net.h"
 
 int main(int argc, char *argv[]) {
-	puts("** TDS v1.0 **");
+
+	std::cout << "** TDS v1.0 **" << std::endl;
+
 	Sleep(1000);
+
 	return EXIT_SUCCESS;
 }

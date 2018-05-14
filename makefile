@@ -1,5 +1,5 @@
 IDIR=./include
-CC=gcc
+CC=g++
 CFLAGS=-Wall -g
 
 ODIR=./src/obj
@@ -34,11 +34,11 @@ _OBJ=tds.o extra.o
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
-$(ODIR)/%.o:./src/%.c $(DEPS)
+$(ODIR)/%.o:./src/%.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 game: $(OBJ)
-	gcc -o ./bin/$@ $^ $(CFLAGS) $(LIBS)
+	$(CC) -o ./bin/$@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean directories
 
