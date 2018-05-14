@@ -15,6 +15,7 @@
 #include "SDL2/SDL_net.h"
 
 #include "../include/timer.h"
+#include "../include/player.h"
 
 using namespace std;
 
