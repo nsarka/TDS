@@ -1,7 +1,6 @@
 
-//class Timer { .... public: start()}
 
-class Timer{
+class Timer {
     public:
         //Initializes variables
         Timer();
@@ -29,4 +28,4 @@ class Timer{
         //The timer status
         bool paused;
         bool started;
-}
+};

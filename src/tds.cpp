@@ -143,7 +143,7 @@ int main( int argc, char* args[] ) {
         render();
 
         // Framerate limit
-
+		
     }
 
     cleanUp();
