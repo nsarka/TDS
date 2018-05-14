@@ -58,7 +58,7 @@ void handleEvents() {
     SDL_Event event;
 
     while( SDL_PollEvent( &event ) != 0 ) {
-        //User requests quit
+        // User requests quit
         if( event.type == SDL_QUIT ) {
             quit = true;
         }
@@ -70,7 +70,7 @@ void handleEvents() {
 
         else if( event.type == SDL_KEYDOWN ) {
 
-            //Select surfaces based on key press
+            // Select surfaces based on key press
             switch( event.key.keysym.sym ) {
                 case SDLK_UP:
                 cout << "Up key" << endl;
