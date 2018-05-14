@@ -100,24 +100,7 @@ void handleEvents() {
     }
 }
 
-<<<<<<< HEAD
-void Loop(){
-
-    while(!quit) {
-		//Timer tmer;
-		// int start_time = tmer.start();
-        //Events:
-        Events();
-
-
-		if (SDL_RenderClear(renderer)!=0) {
-            cout<<"Fehler: "<<SDL_GetError()<<endl;
-        }
-
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-=======
 void update() {
->>>>>>> feb1142563c5cc3f0e709811ab2825ddfe4a661a
 
 }
 
@@ -130,17 +113,9 @@ void render() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-<<<<<<< HEAD
-		// int end_time = tmer.end()
-		// int difference = end - start
-		// if(difference < 60 fps) then sleep 60 - difference
-
-    }
-=======
     // Set new draw color to red and draw player rect
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL_RenderFillRect(renderer, &player);
->>>>>>> feb1142563c5cc3f0e709811ab2825ddfe4a661a
 
     // Draw renderer
     SDL_RenderPresent(renderer);
