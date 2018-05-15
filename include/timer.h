@@ -18,7 +18,7 @@ class Timer {
         bool isStarted();
         bool isPaused();
 
-        void limitFps(int fps);
+        void limitFps(int fps, SDL_Event e, SDL_Color, std::stringstream);
 
     private:
         //The clock time when the Timer is started
