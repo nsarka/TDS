@@ -15,7 +15,6 @@
 #include "SDL2/SDL_net.h"
 
 #include "../include/timer.h"
-#include "../include/player.h"
 
 using namespace std;
 
@@ -138,7 +137,17 @@ int main( int argc, char* args[] ) {
         return -1;
     }
 
+	// Timer Object 't'
 	Timer t;
+
+	// Event Handler
+    SDL_Event e;
+
+    // Set text color as black
+    SDL_Color textColor = { 0, 0, 0, 255};
+
+    // In Memory text stream
+    std::stringstream timeText;
 
     while(!quit) {
         handleEvents();
@@ -146,7 +155,7 @@ int main( int argc, char* args[] ) {
         render();
 
         // Framerate limit
-		t.limitFps(FPS);
+		t.limitFps(FPS, e, textColor, timeText);
     }
 
     cleanUp();
