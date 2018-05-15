@@ -26,11 +26,11 @@ $(BDIR):
 # End directories
 
 # All header files that need to be compiled go here
-_DEPS=timer.h player.h
+_DEPS=timer.h player.h entity.h physics.h spritesheet.h
 DEPS=$(patsubst %,$(IDIR)/%,$(_DEPS))
 
 # All object files (which correspond to compiled .c files, duh) go here
-_OBJ=tds.o player.o timer.o
+_OBJ=tds.o player.o timer.o physics.o spritesheet.o
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 
 

@@ -5,7 +5,6 @@ class Player {
 		~Player();
 
 
-
     private:
-
+        int player_class;
 };
