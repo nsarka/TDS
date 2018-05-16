@@ -21,6 +21,7 @@ using namespace std;
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
 const int FPS = 60;
+const int TICKS_PER_FRAME = 1000 / FPS;
 
 bool quit = false;
 
@@ -137,25 +138,29 @@ int main( int argc, char* args[] ) {
         return -1;
     }
 
-	// Timer Object 't'
-	Timer t;
+	unsigned int frameStart;
+    int frameTime;
 
-	// Event Handler
-    SDL_Event e;
-
-    // Set text color as black
-    SDL_Color textColor = { 0, 0, 0, 255};
-
-    // In Memory text stream
-    std::stringstream timeText;
-
+    // While application is running
     while(!quit) {
+
+        // Get the time in miliseconds game's been running
+        frameStart = SDL_GetTicks();
+
         handleEvents();
         update();
         render();
 
-        // Framerate limit
-		t.limitFps(FPS, e, textColor, timeText);
+        // Calculating frame time
+        frameTime = SDL_GetTicks() - frameStart;
+
+        // Check to see if we need to delay
+        if(TICKS_PER_FRAME > frameTime) {
+            SDL_Delay(TICKS_PER_FRAME - frameTime);
+        }
+
+        cout << frameStart << endl;
+
     }
 
     cleanUp();

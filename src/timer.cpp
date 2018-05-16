@@ -88,25 +88,3 @@ bool Timer::isStarted() {
 bool Timer::isPaused() {
     return paused;
 }
-
-void Timer::limitFps(int fps, SDL_Event e, SDL_Color, std::stringstream) {
-    if(e.type == SDL_KEYDOWN) {
-        // Start/Stop
-        if(e.key.keysym.sym == SDLK_s) {
-            if(isStarted()) {
-                stop();
-            }
-            else {
-                start();
-            }
-        }
-        else if(e.key.keysym.sym == SDLK_p) {
-            if(isPaused()) {
-                unpause();
-            }
-            else {
-                pause();
-            }
-        }
-    }
-}
