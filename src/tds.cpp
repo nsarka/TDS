@@ -5,6 +5,7 @@
 */
 
 #include <iostream>
+#include <string>
 
 #include "windows.h"
 
@@ -15,6 +16,9 @@
 #include "SDL2/SDL_net.h"
 
 #include "../include/timer.h"
+#include "../include/player.h"
+#include "../include/physics.h"
+#include "../include/spritesheet.h"
 
 using namespace std;
 
@@ -29,6 +33,8 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
 SDL_Rect player = {0, 0, 10, 10};
+
+Spritesheet* sheet = NULL;
 
 int init() {
     if( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
@@ -111,12 +117,9 @@ void render() {
     }
 
     // Reset screen by drawing black onto it
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    // Set new draw color to red and draw player rect
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    SDL_RenderFillRect(renderer, &player);
+	SDL_RenderCopy(renderer, sheet->getTexture(), NULL, NULL);
 
     // Draw renderer
     SDL_RenderPresent(renderer);
@@ -137,6 +140,8 @@ int main( int argc, char* args[] ) {
         cerr << "Could not initialize SDL2" << endl;
         return -1;
     }
+
+    sheet = new Spritesheet(renderer, std::string("../assets/characters/1.png"));
 
 	unsigned int frameStart;
     int frameTime;

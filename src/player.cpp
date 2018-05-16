@@ -7,3 +7,7 @@ Player::Player() {
 Player::~Player() {
 
 }
+
+int Player::Draw() {
+	return 0;
+}

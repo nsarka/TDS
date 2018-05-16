@@ -1,4 +1,9 @@
+#pragma once
+
 #include "SDL2/SDL.h"
+
+#include "spritesheet.h"
+
 
 // Abstract base class
 class Entity {
@@ -17,10 +22,6 @@ class Entity {
 	int physics;
 
 	public:
-
-	void LoadSpriteSheet(int a, int b) {
-		width=a; height=b;
-	}
 
 	virtual int Draw() =0;
 };

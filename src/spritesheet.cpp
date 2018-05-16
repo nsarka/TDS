@@ -1,13 +1,10 @@
 #include "../include/spritesheet.h"
-		
-Spritesheet::Spritesheet() {
 
+Spritesheet::Spritesheet(SDL_Renderer* renderer, std::string path) {
+	txt = IMG_LoadTexture(renderer, path.c_str());
+	SDL_QueryTexture(txt, NULL, NULL, &w, &h);
 }
 
 Spritesheet::~Spritesheet() {
-
-}
-
-int Spritesheet::LoadTexture() {
-	return 0;
+	SDL_DestroyTexture(txt);
 }
