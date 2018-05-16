@@ -19,6 +19,7 @@
 #include "../include/player.h"
 #include "../include/physics.h"
 #include "../include/spritesheet.h"
+#include "../include/text.h"
 
 using namespace std;
 
@@ -37,6 +38,9 @@ SDL_Renderer* renderer = NULL;
 SDL_Rect player = {0, 0, 10, 10};
 
 Spritesheet* sheet = NULL;
+Text* textHandler = NULL;
+
+SDL_Texture* sample;
 
 int init() {
     if( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
@@ -123,6 +127,7 @@ void render() {
     SDL_RenderClear(renderer);
 
 	SDL_RenderCopy(renderer, sheet->getTexture(), NULL, NULL);
+    SDL_RenderCopy(renderer, sample, NULL, NULL);
 
     // Draw renderer
     SDL_RenderPresent(renderer);
@@ -145,6 +150,9 @@ int main( int argc, char* args[] ) {
     }
 
     sheet = new Spritesheet(renderer, std::string("../assets/characters/1.png"));
+    textHandler = new Text(std::string("../assets/font/m5x7.ttf"));
+
+    sample = textHandler->RenderText(renderer, "test sample text");
 
 	Uint32 frameStart;
     int frameTime;
