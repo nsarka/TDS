@@ -29,6 +29,8 @@ const int TICKS_PER_FRAME = 1000 / FPS;
 
 bool quit = false;
 
+int count = 0;
+
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
@@ -108,7 +110,8 @@ void handleEvents() {
 }
 
 void update() {
-
+    count++;
+    cout << count << endl;
 }
 
 void render() {
@@ -143,7 +146,7 @@ int main( int argc, char* args[] ) {
 
     sheet = new Spritesheet(renderer, std::string("../assets/characters/1.png"));
 
-	unsigned int frameStart;
+	Uint32 frameStart;
     int frameTime;
 
     // While application is running
@@ -163,8 +166,6 @@ int main( int argc, char* args[] ) {
         if(TICKS_PER_FRAME > frameTime) {
             SDL_Delay(TICKS_PER_FRAME - frameTime);
         }
-
-        cout << frameStart << endl;
 
     }
 
