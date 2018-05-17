@@ -11,4 +11,5 @@ class Player: public Entity {
 
     private:
         int player_class;
+        SDL_Texture* playerSpritesheet;
 };

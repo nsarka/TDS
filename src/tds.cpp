@@ -36,6 +36,7 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
 SDL_Rect player = {0, 0, 10, 10};
+const SDL_Rect fps = {0, 0, 50, 25};
 
 Spritesheet* sheet = NULL;
 Text* textHandler = NULL;
@@ -123,11 +124,17 @@ void render() {
         cout << "Error: " << SDL_GetError() << endl;
     }
 
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+
     // Reset screen by drawing black onto it
     SDL_RenderClear(renderer);
 
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+
+    SDL_RenderDrawRect(renderer, &player);
+
 	SDL_RenderCopy(renderer, sheet->getTexture(), NULL, NULL);
-    SDL_RenderCopy(renderer, sample, NULL, NULL);
+    SDL_RenderCopy(renderer, sample, NULL, &fps);
 
     // Draw renderer
     SDL_RenderPresent(renderer);
@@ -152,16 +159,26 @@ int main( int argc, char* args[] ) {
     sheet = new Spritesheet(renderer, std::string("../assets/characters/1.png"));
     textHandler = new Text(std::string("../assets/font/m5x7.ttf"));
 
-    sample = textHandler->RenderText(renderer, "test sample text");
+    Timer fps;
+
+    fps.start();
 
 	Uint32 frameStart;
     int frameTime;
+
+    char buffer [8];
+    float fr;
 
     // While application is running
     while(!quit) {
 
         // Get the time in miliseconds game's been running
         frameStart = SDL_GetTicks();
+
+        fr = count / (fps.getTicks() / 1000.f);
+
+        snprintf(buffer, 8, "%2.2f", fr);
+        sample = textHandler->RenderText(renderer, std::string(buffer));
 
         handleEvents();
         update();

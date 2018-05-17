@@ -4,7 +4,7 @@
 
 #include "SDL2/SDL_ttf.h"
 
-#define PT_SIZE 22
+#define PT_SIZE 80
 
 class Text {
     public:

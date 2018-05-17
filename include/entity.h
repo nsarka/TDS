@@ -10,7 +10,7 @@ class Entity {
 
 	protected:
 
-	Spritesheet* spr_sheet;
+	SDL_Texture* spr_sheet;
 
 	// Spritesheet source rect
 	SDL_Rect source;
