@@ -76,6 +76,20 @@ int init() {
     // Set up text handler, load font
     textHandler = new Text(std::string("../assets/font/m5x7.ttf"));
 
+    // Set up basic world (TODO: read from file)
+    for(int x = 0; x < 1024/128; x++) {
+        for(int y = 0; y < 768/128; y++) {
+            SDL_Rect tile_rect = { x*128, y*128, 128, 128 };
+            SDL_Rect source_txt_pos = { 32, 16, 16, 16 };
+
+            Tile* t = new Tile("ground", tile_rect, 0);
+            //t->AddFrame(source_txt_pos);
+            t->frame = source_txt_pos;
+
+            gameEntities.push_back(t);
+        }
+    }
+
 	return 0;
 }
 
@@ -92,7 +106,16 @@ void handleEvents() {
             //If the left mouse button was released
             if( event.button.button == SDL_BUTTON_LEFT ) {
                 SDL_Rect tile_rect = { event.button.x-64, event.button.y-64, 128, 128 };
-                SDL_Rect source_txt_pos = { 32, 16, 16, 16 };
+                SDL_Rect source_txt_pos = { 112, 35, 31, 27 };
+
+                Tile* t = new Tile("ground", tile_rect, 0);
+                //t->AddFrame(source_txt_pos);
+                t->frame = source_txt_pos;
+
+                gameEntities.push_back(t);
+            } else {
+                SDL_Rect tile_rect = { event.button.x-64, event.button.y-64, 128, 128 };
+                SDL_Rect source_txt_pos = { 112, 67, 31, 26 };
 
                 Tile* t = new Tile("ground", tile_rect, 0);
                 //t->AddFrame(source_txt_pos);
