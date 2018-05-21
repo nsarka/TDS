@@ -22,6 +22,7 @@
 #include "../include/spritesheet.h"
 #include "../include/text.h"
 #include "../include/tile.h"
+#include "../include/camera.h"
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -38,6 +39,7 @@ SDL_Renderer* renderer = NULL;
 Spritesheet* sheet = NULL;
 Text* textHandler = NULL;
 std::vector<Entity*> gameEntities;
+Camera* cam = NULL;
 
 // FPS counter stuff
 SDL_Texture* fps_texture;
@@ -66,6 +68,9 @@ int init() {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
+    // Set up camera
+    cam = new Camera();
+
     // Set up spritesheet handler and load all spritesheets
     sheet = new Spritesheet(renderer);
     sheet->loadTexture(std::string("../assets/characters/1.png"), std::string("player"));
@@ -77,8 +82,8 @@ int init() {
     textHandler = new Text(std::string("../assets/font/m5x7.ttf"));
 
     // Set up basic world (TODO: read from file)
-    for(int x = 0; x < 1024/128; x++) {
-        for(int y = 0; y < 768/128; y++) {
+    for(int x = 0; x < 1600/128; x++) {
+        for(int y = 0; y < 1200/128; y++) {
             SDL_Rect tile_rect = { x*128, y*128, 128, 128 };
             SDL_Rect source_txt_pos = { 32, 16, 16, 16 };
 
@@ -105,7 +110,7 @@ void handleEvents() {
         if( event.type == SDL_MOUSEBUTTONDOWN ) {
             //If the left mouse button was released
             if( event.button.button == SDL_BUTTON_LEFT ) {
-                SDL_Rect tile_rect = { event.button.x-64, event.button.y-64, 128, 128 };
+                SDL_Rect tile_rect = { (event.button.x-64) - cam->getOffsetX(), (event.button.y-64) - cam->getOffsetY(), 128, 128 };
                 SDL_Rect source_txt_pos = { 112, 35, 31, 27 };
 
                 Tile* t = new Tile("ground", tile_rect, 0);
@@ -114,7 +119,7 @@ void handleEvents() {
 
                 gameEntities.push_back(t);
             } else {
-                SDL_Rect tile_rect = { event.button.x-64, event.button.y-64, 128, 128 };
+                SDL_Rect tile_rect = { (event.button.x-64) - cam->getOffsetX(), (event.button.y-64) - cam->getOffsetY(), 128, 128 };
                 SDL_Rect source_txt_pos = { 112, 67, 31, 26 };
 
                 Tile* t = new Tile("ground", tile_rect, 0);
@@ -131,18 +136,22 @@ void handleEvents() {
             switch( event.key.keysym.sym ) {
                 case SDLK_UP:
                 std::cout << "Up key" << std::endl;
+                cam->moveCameraY(35);
                 break;
 
                 case SDLK_DOWN:
                 std::cout << "Down key" << std::endl;
+                cam->moveCameraY(-35);
                 break;
 
                 case SDLK_LEFT:
                 std::cout << "Left key" << std::endl;
+                cam->moveCameraX(35);
                 break;
 
                 case SDLK_RIGHT:
                 std::cout << "Right key" << std::endl;
+                cam->moveCameraX(-35);
                 break;
 
                 case SDLK_ESCAPE:

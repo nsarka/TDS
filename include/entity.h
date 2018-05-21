@@ -5,7 +5,9 @@
 #include "SDL2/SDL.h"
 
 #include "spritesheet.h"
+#include "camera.h"
 
+extern class Camera* cam; // we have one in global scope
 
 // Abstract base class
 class Entity {

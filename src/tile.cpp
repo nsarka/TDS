@@ -10,9 +10,15 @@ Tile::~Tile() {
 
 }
 
-// Will need fixing later
+// Will need fixing later so it iterates over animCycle
 void Tile::Draw(SDL_Renderer* renderer, Spritesheet* sheet) {
-	//for(SDL_Rect frame : animCycle) {
-        SDL_RenderCopy(renderer, sheet->getTexture(std::string("ground")), &frame, &position);
-    //}
+
+	SDL_Rect camAdjusted = {
+		position.x + cam->getOffsetX(),
+		position.y + cam->getOffsetY(),
+		position.w,
+		position.h
+	};
+
+    SDL_RenderCopy(renderer, sheet->getTexture(std::string("ground")), &frame, &camAdjusted);
 }
