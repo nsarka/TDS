@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "windows.h"
 
@@ -20,8 +21,7 @@
 #include "../include/physics.h"
 #include "../include/spritesheet.h"
 #include "../include/text.h"
-
-using namespace std;
+#include "../include/tile.h"
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -30,22 +30,22 @@ const int TICKS_PER_FRAME = 1000 / FPS;
 
 bool quit = false;
 
-int count = 0;
-
+// SDL2 stuff
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
-SDL_Rect player = {0, 0, 10, 10};
-const SDL_Rect fps = {0, 0, 50, 25};
-
+// TDS stuff
 Spritesheet* sheet = NULL;
 Text* textHandler = NULL;
+std::vector<Entity*> gameEntities;
 
-SDL_Texture* sample;
+// FPS counter stuff
+SDL_Texture* fps_texture;
+int count = 0;
 
 int init() {
     if( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
-        cout << "SDL could not be initialized! SDL_Error: " << SDL_GetError() << endl;
+        std::cout << "SDL could not be initialized! SDL_Error: " << SDL_GetError() << std::endl;
         return 1;
     }
 
@@ -58,12 +58,23 @@ int init() {
 		SDL_WINDOW_SHOWN);
 
 	if( window == NULL ) {
-        cout << "Window could not be created! SDL_Error: " << SDL_GetError() << endl;
+        std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
 		return -1;
 	}
 
+    // Set up renderer
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+    // Set up spritesheet handler and load all spritesheets
+    sheet = new Spritesheet(renderer);
+    sheet->loadTexture(std::string("../assets/characters/1.png"), std::string("player"));
+    sheet->loadTexture(std::string("../assets/environment/darkdimension.png"), std::string("ground"));
+
+    sheet->printAllTexturesLoaded();
+
+    // Set up text handler, load font
+    textHandler = new Text(std::string("../assets/font/m5x7.ttf"));
 
 	return 0;
 }
@@ -77,9 +88,18 @@ void handleEvents() {
             quit = true;
         }
 
-        if( event.type == SDL_MOUSEMOTION ) {
-            player.x = event.motion.x;
-            player.y = event.motion.y;
+        if( event.type == SDL_MOUSEBUTTONDOWN ) {
+            //If the left mouse button was released
+            if( event.button.button == SDL_BUTTON_LEFT ) {
+                SDL_Rect tile_rect = { event.button.x-64, event.button.y-64, 128, 128 };
+                SDL_Rect source_txt_pos = { 32, 16, 16, 16 };
+
+                Tile* t = new Tile("ground", tile_rect, 0);
+                //t->AddFrame(source_txt_pos);
+                t->frame = source_txt_pos;
+
+                gameEntities.push_back(t);
+            }
         }
 
         else if( event.type == SDL_KEYDOWN ) {
@@ -87,27 +107,27 @@ void handleEvents() {
             // Select surfaces based on key press
             switch( event.key.keysym.sym ) {
                 case SDLK_UP:
-                cout << "Up key" << endl;
+                std::cout << "Up key" << std::endl;
                 break;
 
                 case SDLK_DOWN:
-                cout << "Down key" << endl;
+                std::cout << "Down key" << std::endl;
                 break;
 
                 case SDLK_LEFT:
-                cout << "Left key" << endl;
+                std::cout << "Left key" << std::endl;
                 break;
 
                 case SDLK_RIGHT:
-                cout << "Right key" << endl;
+                std::cout << "Right key" << std::endl;
                 break;
 
                 case SDLK_ESCAPE:
-                cout << "Escape key" << endl;
+                std::cout << "Escape key" << std::endl;
                 break;
 
                 default:
-                cout << "Default key??" << endl;
+                std::cout << "Default key??" << std::endl;
                 break;
             }
         }
@@ -115,13 +135,13 @@ void handleEvents() {
 }
 
 void update() {
-    // Update framerate
+    // Update frame count
     count++;
 }
 
 void render() {
     if( SDL_RenderClear(renderer) != 0 ) {
-        cout << "Error: " << SDL_GetError() << endl;
+        std::cout << "Error: " << SDL_GetError() << std::endl;
     }
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
@@ -129,12 +149,12 @@ void render() {
     // Reset screen by drawing black onto it
     SDL_RenderClear(renderer);
 
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    for (auto ent : gameEntities) {
+        ent->Draw(renderer, sheet);
+    }
 
-    SDL_RenderDrawRect(renderer, &player);
-
-	SDL_RenderCopy(renderer, sheet->getTexture(), NULL, NULL);
-    SDL_RenderCopy(renderer, sample, NULL, &fps);
+	//SDL_RenderCopy(renderer, sheet->getTexture(std::string("player")), NULL, NULL);
+    //SDL_RenderCopy(renderer, fps_texture, NULL, &textHandler->fps);
 
     // Draw renderer
     SDL_RenderPresent(renderer);
@@ -147,17 +167,17 @@ void cleanUp() {
     SDL_DestroyWindow(window);
     window = NULL;
 
+    // Free all textures
+    sheet->~Spritesheet();
+
     SDL_Quit();
 }
 
 int main( int argc, char* args[] ) {
     if( init() != 0 ) {
-        cerr << "Could not initialize SDL2" << endl;
+        std::cerr << "Could not initialize SDL2" << std::endl;
         return -1;
     }
-
-    sheet = new Spritesheet(renderer, std::string("../assets/characters/1.png"));
-    textHandler = new Text(std::string("../assets/font/m5x7.ttf"));
 
     Timer fps;
 
@@ -177,7 +197,7 @@ int main( int argc, char* args[] ) {
         fr = count / (fps.getTicks() / 1000.f);
 
         snprintf(buffer, 8, "%2.2f", fr);
-        sample = textHandler->RenderText(renderer, std::string(buffer));
+        fps_texture = textHandler->RenderText(renderer, std::string(buffer));
 
         handleEvents();
         update();
@@ -190,7 +210,6 @@ int main( int argc, char* args[] ) {
         if(TICKS_PER_FRAME > frameTime) {
             SDL_Delay(TICKS_PER_FRAME - frameTime);
         }
-
     }
 
     cleanUp();

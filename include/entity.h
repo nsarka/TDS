@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "SDL2/SDL.h"
 
 #include "spritesheet.h"
@@ -10,18 +12,19 @@ class Entity {
 
 	protected:
 
-	SDL_Texture* spr_sheet;
+	std::string spr_sheet_name;
 
-	// Spritesheet source rect
-	SDL_Rect source;
+	// Rectangles that correspond to each frame in that entity's animation cycle
+	std::vector<SDL_Rect> animCycle;
 
 	// Game destination rect
-	SDL_Rect dest;
+	SDL_Rect position;
 
 	// Physics type
 	int physics;
 
 	public:
 
-	virtual int Draw() =0;
+	virtual void Draw(SDL_Renderer* renderer, Spritesheet* sheet) =0;
+	void AddFrame(SDL_Rect frame) { animCycle.push_back(frame); }
 };

@@ -8,6 +8,5 @@ Player::~Player() {
 
 }
 
-int Player::Draw() {
-	return 0;
+void Player::Draw(SDL_Renderer* renderer, Spritesheet* sheet) {
 }

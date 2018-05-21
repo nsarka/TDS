@@ -1,18 +1,19 @@
 #pragma once
 
+#include <iostream>
+
+#include "spritesheet.h"
 #include "entity.h"
 
-class Player: public Entity {
+class Tile: public Entity {
     public:
-        Player();
-		~Player();
+        Tile(std::string spr_name, SDL_Rect pos, int phys);
+		~Tile();
 
         void Draw(SDL_Renderer* renderer, Spritesheet* sheet);
+		SDL_Rect frame;
 
     private:
-        // For when we get to it
-        int player_class;
-
         std::string spr_sheet_name;
 
         // Rectangles that correspond to each frame in that entity's animation cycle

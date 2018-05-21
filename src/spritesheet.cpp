@@ -1,11 +1,17 @@
 #include "../include/spritesheet.h"
 
-Spritesheet::Spritesheet() { }
+Spritesheet::Spritesheet(SDL_Renderer* r) {
+	renderer = r;
+}
 
 void Spritesheet::loadTexture(std::string path, std::string name) {
 	SDL_Texture* txt = IMG_LoadTexture(renderer, path.c_str());
 
-	spr_list.insert(pair <std::string, SDL_Texture*> (name, txt));
+	if ( txt == NULL ) {
+        std::cout << "Failed to load texture " << name << " error : " << SDL_GetError() << std::endl;
+    }
+
+	spr_list.insert(std::pair <std::string, SDL_Texture*> (name, txt));
 }
 
 void Spritesheet::printAllTexturesLoaded() {
@@ -22,13 +28,7 @@ void Spritesheet::printAllTexturesLoaded() {
 }
 
 SDL_Texture* Spritesheet::getTexture(std::string name) {
-	std::map::const_iterator pos = spr_list.find(name);
-
-	if (spr_list == map.end()) {
-		std::cout << name << " doesnt exist" << endl;
-	} else {
-		return pos->second;
-	}
+	return spr_list[name];
 }
 
 Spritesheet::~Spritesheet() {
