@@ -15,6 +15,9 @@ class Camera {
 
 		void moveCameraX(int amount) { camera_view.x += amount; }
 		void moveCameraY(int amount) { camera_view.y += amount; }
+
+		void absoluteMoveCameraX(int amount) { camera_view.x = amount; }
+		void absoluteMoveCameraY(int amount) { camera_view.y = amount; }
 		
 		bool isInWindow(SDL_Rect r) { return true; }
 

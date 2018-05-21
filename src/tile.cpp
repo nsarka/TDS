@@ -22,3 +22,13 @@ void Tile::Draw(SDL_Renderer* renderer, Spritesheet* sheet) {
 
     SDL_RenderCopy(renderer, sheet->getTexture(std::string("ground")), &frame, &camAdjusted);
 }
+
+void Tile::SetAbsolutePosition(int x, int y) {
+	position.x = x;
+	position.y = y;
+}
+
+void Tile::move(int x, int y) {
+	position.x += x;
+	position.y += y;
+}

@@ -18,6 +18,7 @@ class Entity {
 
 	// Rectangles that correspond to each frame in that entity's animation cycle
 	std::vector<SDL_Rect> animCycle;
+	int currentFrame;
 
 	// Game destination rect
 	SDL_Rect position;

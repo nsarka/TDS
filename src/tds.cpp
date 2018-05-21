@@ -39,6 +39,10 @@ SDL_Renderer* renderer = NULL;
 Spritesheet* sheet = NULL;
 Text* textHandler = NULL;
 std::vector<Entity*> gameEntities;
+
+Tile* theCrystal = NULL;
+bool theCrystalDirectionRight = true;
+
 Camera* cam = NULL;
 
 // FPS counter stuff
@@ -94,6 +98,16 @@ int init() {
             gameEntities.push_back(t);
         }
     }
+
+    // Set up theCrystal
+    SDL_Rect tile_rect = { 600, 400, 128, 128 };
+    SDL_Rect source_txt_pos = { 400, 25, 16, 36 };
+
+    theCrystal = new Tile("ground", tile_rect, 0);
+    //t->AddFrame(source_txt_pos);
+    theCrystal->frame = source_txt_pos;
+
+    gameEntities.push_back(theCrystal);
 
 	return 0;
 }
@@ -158,6 +172,11 @@ void handleEvents() {
                 std::cout << "Escape key" << std::endl;
                 break;
 
+                case SDLK_z:
+                cam->absoluteMoveCameraX(512 - 48 - (theCrystal->position.x));
+                cam->absoluteMoveCameraY(384 - 72 - (theCrystal->position.y));
+                break;
+
                 default:
                 std::cout << "Default key??" << std::endl;
                 break;
@@ -169,6 +188,20 @@ void handleEvents() {
 void update() {
     // Update frame count
     count++;
+
+    if(theCrystalDirectionRight) {
+        if(theCrystal->position.x >= 800) {
+            theCrystalDirectionRight = false;
+        }
+
+        theCrystal->move(1,0);
+    } else {
+        if(theCrystal->position.x <= 200) {
+            theCrystalDirectionRight = true;
+        }
+
+        theCrystal->move(-1,0);
+    }
 }
 
 void render() {
