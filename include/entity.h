@@ -7,7 +7,7 @@
 #include "spritesheet.h"
 #include "camera.h"
 
-extern class Camera* cam; // we have one in global scope
+extern class Camera* cam; // we have one in global scope, so let everything that inherits Entity stuff use that one
 
 // Abstract base class
 class Entity {
