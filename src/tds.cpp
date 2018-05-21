@@ -115,8 +115,8 @@ void handleEvents() {
 }
 
 void update() {
+    // Update framerate
     count++;
-    cout << count << endl;
 }
 
 void render() {
@@ -169,7 +169,6 @@ int main( int argc, char* args[] ) {
     char buffer [8];
     float fr;
 
-    // While application is running
     while(!quit) {
 
         // Get the time in miliseconds game's been running

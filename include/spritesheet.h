@@ -4,26 +4,18 @@
 #include "SDL2/SDL_image.h"
 
 #include <string>
-
-// TODO: Make this class use a container to hold/access all spritesheets
-
-/*
-    spritesheet map:
-
-    player1: assets/filenameforplayer1.png
-    grasstile: assets/environment/grass.png
-
-    SDL_Texture* playerText = getTexture('player1');
-*/
+#include <map>
 
 class Spritesheet {
     public:
-        Spritesheet(SDL_Renderer* renderer, std::string path);
+        Spritesheet();
 		~Spritesheet();
 
-		SDL_Texture* getTexture() { return txt; }
+		SDL_Texture* getTexture(std::string name);
+        void loadTexture(std::string path, std::string name);
+        void printAllTexturesLoaded();
 
     private:
-        SDL_Texture *txt;
-		int w, h;
+        std::map <std::string, SDL_Texture*> spr_list;
+        SDL_Renderer* renderer;
 };
