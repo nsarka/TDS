@@ -154,7 +154,7 @@ void render() {
     }
 
 	//SDL_RenderCopy(renderer, sheet->getTexture(std::string("player")), NULL, NULL);
-    //SDL_RenderCopy(renderer, fps_texture, NULL, &textHandler->fps);
+    SDL_RenderCopy(renderer, fps_texture, NULL, &textHandler->fps);
 
     // Draw renderer
     SDL_RenderPresent(renderer);
