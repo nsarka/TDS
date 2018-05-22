@@ -9,7 +9,7 @@ bool Physics::checkCollision(SDL_Rect ent1, SDL_Rect ent2) {
 	return false;
 }
 
-bool checkMouseCollision(SDL_Rect ent, SDL_Point point) {
+bool Physics::checkMouseCollision(SDL_Rect ent, SDL_Point point) {
 	if(point.x >= ent.x && point.x <= (ent.x + ent.w)) {
 		if(point.y >= ent.y && point.y <= (ent.y + ent.h)) {
 			return true;

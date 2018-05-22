@@ -184,6 +184,15 @@ void handleEvents() {
                 cam->absoluteMoveCameraY(384 - 72 - (theCrystal->position.y));
                 break;
 
+                case SDLK_SPACE:
+                if(Physics::checkMouseCollision(theCrystal->position, cursor)) {
+                    std::cout << "true" << std::endl;
+                }
+                else {
+                    std::cout << "false" << std::endl;
+                }
+                break;
+
                 default:
                 std::cout << "Default key??" << std::endl;
                 break;
@@ -198,6 +207,10 @@ void update() {
 
     // Update mouse position variables
     SDL_GetMouseState(&mouseX, &mouseY);
+
+    // Update the offset of camera to cursor
+    mouseX -= cam->getOffsetX();
+    mouseY -= cam->getOffsetY();
 
     // Update cursor
     cursor = { mouseX, mouseY };

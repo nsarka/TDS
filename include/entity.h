@@ -20,9 +20,6 @@ class Entity {
 	std::vector<SDL_Rect> animCycle;
 	int currentFrame;
 
-	// Game destination rect
-	SDL_Rect position;
-
 	// Physics type
 	int physics;
 
@@ -30,4 +27,7 @@ class Entity {
 
 	virtual void Draw(SDL_Renderer* renderer, Spritesheet* sheet) =0;
 	void AddFrame(SDL_Rect frame) { animCycle.push_back(frame); }
+
+	// Game destination rect
+	SDL_Rect position;
 };
