@@ -45,6 +45,10 @@ bool theCrystalDirectionRight = true;
 
 Camera* cam = NULL;
 
+// Mouse position variables
+int mouseX, mouseY;
+SDL_Point cursor;
+
 // FPS counter stuff
 SDL_Texture* fps_texture;
 int count = 0;
@@ -74,6 +78,9 @@ int init() {
 
     // Set up camera
     cam = new Camera();
+
+    // Set up cursor
+    cursor = { mouseX, mouseY };
 
     // Set up spritesheet handler and load all spritesheets
     sheet = new Spritesheet(renderer);
@@ -188,6 +195,12 @@ void handleEvents() {
 void update() {
     // Update frame count
     count++;
+
+    // Update mouse position variables
+    SDL_GetMouseState(&mouseX, &mouseY);
+
+    // Update cursor
+    cursor = { mouseX, mouseY };
 
     if(theCrystalDirectionRight) {
         if(theCrystal->position.x >= 800) {
