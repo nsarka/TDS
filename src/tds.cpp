@@ -39,6 +39,7 @@ SDL_Renderer* renderer = NULL;
 Spritesheet* sheet = NULL;
 Text* textHandler = NULL;
 std::vector<Entity*> gameEntities;
+Player* plyr = NULL;
 
 Tile* theCrystal = NULL;
 bool theCrystalDirectionRight = true;
@@ -84,10 +85,12 @@ int init() {
 
     // Set up spritesheet handler and load all spritesheets
     sheet = new Spritesheet(renderer);
-    sheet->loadTexture(std::string("../assets/characters/1.png"), std::string("player"));
     sheet->loadTexture(std::string("../assets/environment/darkdimension.png"), std::string("ground"));
 
-    sheet->printAllTexturesLoaded();
+    SDL_Rect p_pos = {1024/2, 768/2, 128, 128};
+
+    // Set up player
+    plyr = new Player(sheet, std::string("../assets/characters/2_south2.png"), 0, p_pos);
 
     // Set up text handler, load font
     textHandler = new Text(std::string("../assets/font/m5x7.ttf"));
@@ -115,6 +118,8 @@ int init() {
     theCrystal->frame = source_txt_pos;
 
     gameEntities.push_back(theCrystal);
+
+    sheet->printAllTexturesLoaded();
 
 	return 0;
 }
@@ -156,27 +161,26 @@ void handleEvents() {
             // Select surfaces based on key press
             switch( event.key.keysym.sym ) {
                 case SDLK_UP:
-                std::cout << "Up key" << std::endl;
-                cam->moveCameraY(35);
+                plyr->is_moving = true;
+                plyr->Move(0,-5);
                 break;
 
                 case SDLK_DOWN:
-                std::cout << "Down key" << std::endl;
-                cam->moveCameraY(-35);
+                plyr->is_moving = true;
+                plyr->Move(0,5);
                 break;
 
                 case SDLK_LEFT:
-                std::cout << "Left key" << std::endl;
-                cam->moveCameraX(35);
+                plyr->is_moving = true;
+                plyr->Move(-5,0);
                 break;
 
                 case SDLK_RIGHT:
-                std::cout << "Right key" << std::endl;
-                cam->moveCameraX(-35);
+                plyr->is_moving = true;
+                plyr->Move(5,0);
                 break;
 
                 case SDLK_ESCAPE:
-                std::cout << "Escape key" << std::endl;
                 break;
 
                 case SDLK_z:
@@ -198,12 +202,40 @@ void handleEvents() {
                 break;
             }
         }
+        else if( event.type == SDL_KEYUP ) {
+
+            // Select surfaces based on key press
+            switch( event.key.keysym.sym ) {
+                case SDLK_UP:
+                plyr->is_moving = false;
+                break;
+
+                case SDLK_DOWN:
+                plyr->is_moving = false;
+                break;
+
+                case SDLK_LEFT:
+                plyr->is_moving = false;
+                break;
+
+                case SDLK_RIGHT:
+                plyr->is_moving = false;
+                break;
+
+                default:
+                std::cout << "Default key??" << std::endl;
+                break;
+            }
+        }
     }
 }
 
 void update() {
     // Update frame count
     count++;
+
+    cam->absoluteMoveCameraX(512 - 64 - (plyr->position.x));
+    cam->absoluteMoveCameraY(384 - 64 - (plyr->position.y));
 
     // Update mouse position variables
     SDL_GetMouseState(&mouseX, &mouseY);
@@ -244,8 +276,8 @@ void render() {
         ent->Draw(renderer, sheet);
     }
 
-	//SDL_RenderCopy(renderer, sheet->getTexture(std::string("player")), NULL, NULL);
     SDL_RenderCopy(renderer, fps_texture, NULL, &textHandler->fps);
+    plyr->Draw(renderer, sheet);
 
     // Draw renderer
     SDL_RenderPresent(renderer);

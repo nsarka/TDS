@@ -2,12 +2,20 @@
 
 #include "entity.h"
 
+// Zero indexed, so there's 4 frames 0-3
+#define MAX_PLAYER_FRAMES 3
+
 class Player: public Entity {
     public:
-        Player();
+        Player(Spritesheet* sheet, std::string spr_path, int pclass, SDL_Rect pos);
 		~Player();
 
         void Draw(SDL_Renderer* renderer, Spritesheet* sheet);
+        void Move(int x, int y);
+
+        SDL_Rect position;
+
+        bool is_moving = false;
 
     private:
         // For when we get to it
@@ -17,10 +25,9 @@ class Player: public Entity {
 
         // Rectangles that correspond to each frame in that entity's animation cycle
         std::vector<SDL_Rect> animCycle;
-
-        // Game destination rect
-        SDL_Rect position;
+        int animFrame = 0;
+        int count = 0;
 
         // Physics type
-        int physics;
+        int physics = 0;
 };

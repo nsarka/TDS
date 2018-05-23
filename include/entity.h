@@ -7,6 +7,8 @@
 #include "spritesheet.h"
 #include "camera.h"
 
+enum class Direction { NORTH, SOUTH, EAST, WEST };
+
 extern class Camera* cam; // we have one in global scope, so let everything that inherits Entity stuff use that one
 
 // Abstract base class
