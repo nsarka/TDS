@@ -207,10 +207,8 @@ void handleEvents() {
                 break;
 
                 case SDLK_F1:
-                if(drawFPS)
-                    drawFPS = false;
-                else  
-                    drawFPS = true;
+                drawFPS = !drawFPS;
+                std::cout << "Toggled FPS Draw" << std::endl;
                 break;
 
                 case SDLK_F3:
@@ -299,11 +297,9 @@ void render() {
         ent->Draw(renderer, sheet);
     }
 
-    SDL_RenderCopy(renderer, fps_texture, NULL, &textHandler->fps);
     plyr->Draw(renderer, sheet);
-    
+
     if(drawFPS) {
-        //SDL_RenderCopy(renderer, sheet->getTexture(std::string("player")), NULL, NULL);
         SDL_RenderCopy(renderer, fps_texture, NULL, &textHandler->fps);
     }
 
