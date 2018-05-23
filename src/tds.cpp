@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "windows.h"
 
@@ -23,6 +24,7 @@
 #include "../include/text.h"
 #include "../include/tile.h"
 #include "../include/camera.h"
+#include "../include/level.h"
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -53,6 +55,10 @@ SDL_Point cursor;
 // FPS counter stuff
 SDL_Texture* fps_texture;
 int count = 0;
+bool drawFPS = true;
+
+// Stream for saving levels
+std::ofstream lvlFile;
 
 int init() {
     if( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
@@ -82,6 +88,9 @@ int init() {
 
     // Set up cursor
     cursor = { mouseX, mouseY };
+
+    // Open level file
+    lvlFile.open("../bin/levels/test.txt");
 
     // Set up spritesheet handler and load all spritesheets
     sheet = new Spritesheet(renderer);
@@ -197,6 +206,20 @@ void handleEvents() {
                 }
                 break;
 
+                case SDLK_F1:
+                if(drawFPS)
+                    drawFPS = false;
+                else  
+                    drawFPS = true;
+                break;
+
+                case SDLK_F3:
+                for (auto ent : gameEntities) {
+                    Level::saveLevel(ent, lvlFile);
+                }
+                lvlFile.close();
+                break;
+
                 default:
                 std::cout << "Default key??" << std::endl;
                 break;
@@ -278,6 +301,11 @@ void render() {
 
     SDL_RenderCopy(renderer, fps_texture, NULL, &textHandler->fps);
     plyr->Draw(renderer, sheet);
+    
+    if(drawFPS) {
+        //SDL_RenderCopy(renderer, sheet->getTexture(std::string("player")), NULL, NULL);
+        SDL_RenderCopy(renderer, fps_texture, NULL, &textHandler->fps);
+    }
 
     // Draw renderer
     SDL_RenderPresent(renderer);
