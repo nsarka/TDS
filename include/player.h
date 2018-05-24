@@ -12,6 +12,7 @@ class Player: public Entity {
 
         void Draw(SDL_Renderer* renderer, Spritesheet* sheet);
         void Move(int x, int y);
+        std::string Serialize() { return std::string(""); };
 
         SDL_Rect position;
 

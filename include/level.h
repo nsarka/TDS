@@ -7,8 +7,8 @@
 
 class Level {
     private:
-        Level(){}
+        Level() {}
 
     public:
-        static void saveLevel(Entity* ent, std::ofstream& lvlFile);
+        static void saveLevel(std::string levelname, std::vector<Entity*> gameEntities);
 };

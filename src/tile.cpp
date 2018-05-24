@@ -20,7 +20,31 @@ void Tile::Draw(SDL_Renderer* renderer, Spritesheet* sheet) {
 		position.h
 	};
 
-    SDL_RenderCopy(renderer, sheet->getTexture(std::string("ground")), &frame, &camAdjusted);
+    SDL_RenderCopy(renderer, sheet->getTexture(spr_sheet_name), &frame, &camAdjusted);
+}
+
+std::string Tile::Serialize() {
+	std::stringstream ss;
+
+	ss << spr_sheet_name << ",";
+
+	for(SDL_Rect rect : animCycle) {
+		ss << rect.x << ",";
+		ss << rect.y << ",";
+		ss << rect.w << ",";
+		ss << rect.h << ",";
+	}
+
+	ss << currentFrame << ",";
+
+	ss << physics << ",";
+
+	ss << position.x << ",";
+	ss << position.y << ",";
+	ss << position.w << ",";
+	ss << position.h;
+
+	return ss.str();
 }
 
 void Tile::SetAbsolutePosition(int x, int y) {

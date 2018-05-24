@@ -57,9 +57,6 @@ SDL_Texture* fps_texture;
 int count = 0;
 bool drawFPS = true;
 
-// Stream for saving levels
-std::ofstream lvlFile;
-
 int init() {
     if( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
         std::cout << "SDL could not be initialized! SDL_Error: " << SDL_GetError() << std::endl;
@@ -89,12 +86,9 @@ int init() {
     // Set up cursor
     cursor = { mouseX, mouseY };
 
-    // Open level file
-    lvlFile.open("../bin/levels/test.txt");
-
     // Set up spritesheet handler and load all spritesheets
     sheet = new Spritesheet(renderer);
-    sheet->loadTexture(std::string("../assets/environment/darkdimension.png"), std::string("ground"));
+    sheet->loadTexture(std::string("../assets/environment/darkdimension.png"), std::string("environment"));
 
     SDL_Rect p_pos = {1024/2, 768/2, 128, 128};
 
@@ -110,7 +104,7 @@ int init() {
             SDL_Rect tile_rect = { x*128, y*128, 128, 128 };
             SDL_Rect source_txt_pos = { 32, 16, 16, 16 };
 
-            Tile* t = new Tile("ground", tile_rect, 0);
+            Tile* t = new Tile("environment", tile_rect, 0);
             //t->AddFrame(source_txt_pos);
             t->frame = source_txt_pos;
 
@@ -122,7 +116,7 @@ int init() {
     SDL_Rect tile_rect = { 600, 400, 128, 128 };
     SDL_Rect source_txt_pos = { 400, 25, 16, 36 };
 
-    theCrystal = new Tile("ground", tile_rect, 0);
+    theCrystal = new Tile("environment", tile_rect, 0);
     //t->AddFrame(source_txt_pos);
     theCrystal->frame = source_txt_pos;
 
@@ -148,7 +142,7 @@ void handleEvents() {
                 SDL_Rect tile_rect = { (event.button.x-64) - cam->getOffsetX(), (event.button.y-64) - cam->getOffsetY(), 128, 128 };
                 SDL_Rect source_txt_pos = { 112, 35, 31, 27 };
 
-                Tile* t = new Tile("ground", tile_rect, 0);
+                Tile* t = new Tile("environment", tile_rect, 0);
                 //t->AddFrame(source_txt_pos);
                 t->frame = source_txt_pos;
 
@@ -157,7 +151,7 @@ void handleEvents() {
                 SDL_Rect tile_rect = { (event.button.x-64) - cam->getOffsetX(), (event.button.y-64) - cam->getOffsetY(), 128, 128 };
                 SDL_Rect source_txt_pos = { 112, 67, 31, 26 };
 
-                Tile* t = new Tile("ground", tile_rect, 0);
+                Tile* t = new Tile("environment", tile_rect, 0);
                 //t->AddFrame(source_txt_pos);
                 t->frame = source_txt_pos;
 
@@ -212,14 +206,12 @@ void handleEvents() {
                 break;
 
                 case SDLK_F3:
-                for (auto ent : gameEntities) {
-                    Level::saveLevel(ent, lvlFile);
-                }
-                lvlFile.close();
+                std::cout << "Saving level..." << std::endl;
+                Level::saveLevel("01", gameEntities);
                 break;
 
                 default:
-                std::cout << "Default key??" << std::endl;
+                //std::cout << "Default key??" << std::endl;
                 break;
             }
         }
@@ -244,7 +236,7 @@ void handleEvents() {
                 break;
 
                 default:
-                std::cout << "Default key??" << std::endl;
+                //std::cout << "Default key??" << std::endl;
                 break;
             }
         }

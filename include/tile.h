@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
 
 #include "spritesheet.h"
 #include "entity.h"
@@ -11,6 +12,7 @@ class Tile: public Entity {
 		~Tile();
 
         void Draw(SDL_Renderer* renderer, Spritesheet* sheet);
+        std::string Serialize();
         void SetAbsolutePosition(int x, int y);
         void move(int x, int y);
 		SDL_Rect frame;

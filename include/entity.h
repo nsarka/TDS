@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "SDL2/SDL.h"
 
@@ -14,7 +15,7 @@ extern class Camera* cam; // we have one in global scope, so let everything that
 // Abstract base class
 class Entity {
 
-	protected:
+	public:
 
 	std::string spr_sheet_name;
 
@@ -25,10 +26,9 @@ class Entity {
 	// Physics type
 	int physics;
 
-	public:
-
 	virtual void Draw(SDL_Renderer* renderer, Spritesheet* sheet) =0;
 	void AddFrame(SDL_Rect frame) { animCycle.push_back(frame); }
+	virtual std::string Serialize() =0;
 
 	// Game destination rect
 	SDL_Rect position;
