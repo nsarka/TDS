@@ -43,9 +43,6 @@ Text* textHandler = NULL;
 std::vector<Entity*> gameEntities;
 Player* plyr = NULL;
 
-Tile* theCrystal = NULL;
-bool theCrystalDirectionRight = true;
-
 Camera* cam = NULL;
 
 std::string levelname;
@@ -85,6 +82,9 @@ int init() {
     // Set up camera
     cam = new Camera();
 
+    // Load Level '01'
+    Level::loadLevel("01", &gameEntities);
+
     // Set up cursor
     cursor = { mouseX, mouseY };
 
@@ -99,30 +99,6 @@ int init() {
 
     // Set up text handler, load font
     textHandler = new Text(std::string("../assets/font/m5x7.ttf"));
-
-    // Set up basic world (TODO: read from file)
-    for(int x = 0; x < 1600/128; x++) {
-        for(int y = 0; y < 1200/128; y++) {
-            SDL_Rect tile_rect = { x*128, y*128, 128, 128 };
-            SDL_Rect source_txt_pos = { 32, 16, 16, 16 };
-
-            Tile* t = new Tile("environment", tile_rect, 0);
-            //t->AddFrame(source_txt_pos);
-            t->frame = source_txt_pos;
-
-            gameEntities.push_back(t);
-        }
-    }
-
-    // Set up theCrystal
-    SDL_Rect tile_rect = { 600, 400, 128, 128 };
-    SDL_Rect source_txt_pos = { 400, 25, 16, 36 };
-
-    theCrystal = new Tile("environment", tile_rect, 0);
-    //t->AddFrame(source_txt_pos);
-    theCrystal->frame = source_txt_pos;
-
-    gameEntities.push_back(theCrystal);
 
     sheet->printAllTexturesLoaded();
 
@@ -188,20 +164,6 @@ void handleEvents() {
                 case SDLK_ESCAPE:
                 break;
 
-                case SDLK_z:
-                cam->absoluteMoveCameraX(512 - 48 - (theCrystal->position.x));
-                cam->absoluteMoveCameraY(384 - 72 - (theCrystal->position.y));
-                break;
-
-                case SDLK_SPACE:
-                if(Physics::checkMouseCollision(theCrystal->position, cursor)) {
-                    std::cout << "true" << std::endl;
-                }
-                else {
-                    std::cout << "false" << std::endl;
-                }
-                break;
-
                 case SDLK_F1:
                 drawFPS = !drawFPS;
                 std::cout << "Toggled FPS Draw" << std::endl;
@@ -214,11 +176,11 @@ void handleEvents() {
                 Level::saveLevel(levelname, gameEntities);
                 break;
 
-                case SDLK_F4:
-                std::cout << "Enter Level Name: ";
-                std::cin >> levelname;
-                Level::loadLevel(levelname, &gameEntities);
-                break;
+                // case SDLK_F4:
+                // std::cout << "Enter Level Name: ";
+                // std::cin >> levelname;
+                // Level::loadLevel(levelname, &gameEntities);
+                // break;
 
                 default:
                 //std::cout << "Default key??" << std::endl;
@@ -269,20 +231,6 @@ void update() {
 
     // Update cursor
     cursor = { mouseX, mouseY };
-
-    if(theCrystalDirectionRight) {
-        if(theCrystal->position.x >= 800) {
-            theCrystalDirectionRight = false;
-        }
-
-        theCrystal->move(1,0);
-    } else {
-        if(theCrystal->position.x <= 200) {
-            theCrystalDirectionRight = true;
-        }
-
-        theCrystal->move(-1,0);
-    }
 }
 
 void render() {
