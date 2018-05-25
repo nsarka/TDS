@@ -29,6 +29,7 @@ class Entity {
 	virtual void Draw(SDL_Renderer* renderer, Spritesheet* sheet) =0;
 	void AddFrame(SDL_Rect frame) { animCycle.push_back(frame); }
 	virtual std::string Serialize() =0;
+	virtual void Deserialize(std::string data) =0;
 
 	// Game destination rect
 	SDL_Rect position;

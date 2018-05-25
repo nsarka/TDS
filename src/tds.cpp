@@ -48,6 +48,8 @@ bool theCrystalDirectionRight = true;
 
 Camera* cam = NULL;
 
+std::string levelname;
+
 // Mouse position variables
 int mouseX, mouseY;
 SDL_Point cursor;
@@ -206,8 +208,16 @@ void handleEvents() {
                 break;
 
                 case SDLK_F3:
-                std::cout << "Saving level..." << std::endl;
-                Level::saveLevel("01", gameEntities);
+                std::cout << "Enter name for level: ";
+                std::cin >> levelname;
+                std::cout << "Saving level '" << levelname << "' ..." << std::endl;
+                Level::saveLevel(levelname, gameEntities);
+                break;
+
+                case SDLK_F4:
+                std::cout << "Enter Level Name: ";
+                std::cin >> levelname;
+                Level::loadLevel(levelname, &gameEntities);
                 break;
 
                 default:

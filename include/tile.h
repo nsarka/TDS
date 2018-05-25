@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <iomanip>
+#include <locale>
 
 #include "spritesheet.h"
 #include "entity.h"
@@ -9,10 +12,12 @@
 class Tile: public Entity {
     public:
         Tile(std::string spr_name, SDL_Rect pos, int phys);
+        Tile(){}
 		~Tile();
 
         void Draw(SDL_Renderer* renderer, Spritesheet* sheet);
         std::string Serialize();
+        void Deserialize(std::string data);
         void SetAbsolutePosition(int x, int y);
         void move(int x, int y);
 		SDL_Rect frame;
