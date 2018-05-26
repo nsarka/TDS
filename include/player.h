@@ -1,6 +1,7 @@
 #pragma once
 
 #include "entity.h"
+#include <sstream>
 
 // Zero indexed, so there's 4 frames 0-3
 #define MAX_PLAYER_FRAMES 3
@@ -13,7 +14,7 @@ class Player: public Entity {
         void Draw(SDL_Renderer* renderer, Spritesheet* sheet);
         void Move(int x, int y);
         std::string Serialize() { return std::string(""); };
-        void Deserialize(std::string data){};
+        void Deserialize(std::string lineData){};
 
         SDL_Rect position;
 
@@ -27,7 +28,7 @@ class Player: public Entity {
 
         // Rectangles that correspond to each frame in that entity's animation cycle
         std::vector<SDL_Rect> animCycle;
-        int animFrame = 0;
+        int currentFrame = 0;
         int count = 0;
 
         // Physics type

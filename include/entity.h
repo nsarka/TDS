@@ -21,7 +21,10 @@ class Entity {
 
 	// Rectangles that correspond to each frame in that entity's animation cycle
 	std::vector<SDL_Rect> animCycle;
-	int currentFrame;
+	unsigned int currentFrame;
+
+	// fps / animspeed = 60 / 10 = every sixth frame
+	int animSpeed = 10;
 
 	// Physics type
 	int physics;
@@ -29,7 +32,7 @@ class Entity {
 	virtual void Draw(SDL_Renderer* renderer, Spritesheet* sheet) =0;
 	void AddFrame(SDL_Rect frame) { animCycle.push_back(frame); }
 	virtual std::string Serialize() =0;
-	virtual void Deserialize(std::string data) =0;
+	virtual void Deserialize(std::string lineData) =0;
 
 	// Game destination rect
 	SDL_Rect position;

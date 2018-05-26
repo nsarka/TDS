@@ -36,6 +36,4 @@ void Level::loadLevel(std::string levelname, std::vector<Entity*> * gameEntities
         ent->Deserialize(data);
         gameEntities->push_back(ent);
     }
-    
-    
 }

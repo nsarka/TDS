@@ -4,6 +4,7 @@ Tile::Tile(std::string spr_name, SDL_Rect pos, int phys) {
 	spr_sheet_name = spr_name;
 	position = pos;
 	physics = phys;
+	currentFrame = 0;
 }
 
 Tile::~Tile() {
@@ -20,144 +21,93 @@ void Tile::Draw(SDL_Renderer* renderer, Spritesheet* sheet) {
 		position.h
 	};
 
-    SDL_RenderCopy(renderer, sheet->getTexture(spr_sheet_name), &frame, &camAdjusted);
+    SDL_RenderCopy(renderer, sheet->getTexture(spr_sheet_name), &animCycle.at(currentFrame), &camAdjusted);
+
+	extern int count;
+
+	if(count % animSpeed == 0) {
+		if(currentFrame < animCycle.size()) {
+			//currentFrame++;
+		} else {
+			currentFrame = 0;
+		}
+	}
 }
 
 std::string Tile::Serialize() {
 	std::stringstream ss;
 
-	ss << spr_sheet_name << ",";
-
-	ss << frame.x << ",";
-	ss << frame.y << ",";
-	ss << frame.w << ",";
-	ss << frame.h << ",";
-
-	//ss << currentFrame << "|";
-
-	// for(SDL_Rect rect : animCycle) {
-	// 	ss << rect.x << ",";
-	// 	ss << rect.y << ",";
-	// 	ss << rect.w << ",";
-	// 	ss << rect.h << ",";
-	// }
-
-	//ss << currentFrame << "|";
-
-	ss << currentFrame << ",";
-
-	ss << physics << ",";
-
 	ss << position.x << ",";
 	ss << position.y << ",";
 	ss << position.w << ",";
 	ss << position.h << ",";
+	ss << physics << ",";
+	ss << spr_sheet_name << ",";
+	ss << currentFrame << ",";
+	ss << animSpeed << ",";
+
+	ss << "|,";		// Using | to denote that the next field has variable # data values
+
+	for(SDL_Rect rect : animCycle) {
+		ss << rect.x << ",";
+		ss << rect.y << ",";
+		ss << rect.w << ",";
+		ss << rect.h << ",";
+	}
+
+	//ss << "|,";
 
 	return ss.str();
 }
 
-void Tile::Deserialize(std::string data) {
-	std::string temp;
-	int length = data.length();
-	char comma = ',';
+void Tile::Deserialize(std::string lineData) {
+	std::stringstream ss;
+	ss << lineData;
+	std::queue<std::string> readData;
 
-	int index = data.find(comma);
-	length -= index;
+	while(ss.good()) {
+		std::string substr;
+		getline(ss, substr, ',');
+		readData.push(substr);
+	}
 
-	spr_sheet_name = data.substr(0, index);
-	temp = data.substr(index + 1, length);
-	data = temp;
+	position.x 			= atoi(readData.front().c_str());
+	readData.pop();
 
-	index = data.find(comma);
-	length -= index + 1;
-	temp = data.substr(0, index);
-	std::istringstream convert6(temp);
-	if(!(convert6 >> frame.x)) 
-		frame.x = 0;
-	temp = data.substr(index + 1, length);
-	data = temp;
+	position.y 			= atoi(readData.front().c_str());
+	readData.pop();
 
-	index = data.find(comma);
-	length -= index + 1;
-	temp = data.substr(0, index);
-	std::istringstream convert7(temp);
-	if(!(convert7 >> frame.y)) 
-		frame.y = 0;
-	temp = data.substr(index + 1, length);
-	data = temp;
+	position.w 			= atoi(readData.front().c_str());
+	readData.pop();
 
-	index = data.find(comma);
-	length -= index + 1;
-	temp = data.substr(0, index);
-	std::istringstream convert8(temp);
-	if(!(convert8 >> frame.w)) 
-		frame.w = 0;
-	temp = data.substr(index + 1, length);
-	data = temp;
+	position.h 			= atoi(readData.front().c_str());
+	readData.pop();
 
-	index = data.find(comma);
-	length -= index + 1;
-	temp = data.substr(0, index);
-	std::istringstream convert9(temp);
-	if(!(convert9 >> frame.h)) 
-		frame.h = 0;
-	temp = data.substr(index + 1, length);
-	data = temp;
+	physics 			= atoi(readData.front().c_str());
+	readData.pop();
 
-	index = data.find(comma);
-	length -= index + 1;
-	temp = data.substr(0, index);
-	std::istringstream convert(temp);
-	if(!(convert >> currentFrame)) 
-		currentFrame = 0;
-	temp = data.substr(index + 1, length);
-	data = temp;
+	spr_sheet_name 		= readData.front();
+	readData.pop();
 
-	index = data.find(comma);
-	length -= index + 1;
-	temp = data.substr(0, index);
-	std::istringstream convert1(temp);
-	if(!(convert1 >> physics)) 
-		physics = 0;
-	temp = data.substr(index + 1, length);
-	data = temp;
+	currentFrame 		= atoi(readData.front().c_str());
+	readData.pop();
 
-	index = data.find(comma);
-	length -= index + 1;
-	temp = data.substr(0, index);
-	std::istringstream convert2(temp);
-	if(!(convert2 >> position.x)) 
-		position.x = 0;
-	temp = data.substr(index + 1, length);
-	data = temp;
+	animSpeed 			= atoi(readData.front().c_str());
+	readData.pop();
 
-	index = data.find(comma);
-	length -= index + 1;
-	temp = data.substr(0, index);
-	std::istringstream convert3(temp);
-	if(!(convert3 >> position.y)) 
-		position.y = 0;
-	temp = data.substr(index + 1, length);
-	data = temp;
+	// "|"
+	readData.pop();
 
-	index = data.find(comma);
-	length -= index + 1;
-	temp = data.substr(0, index);
-	std::istringstream convert4(temp);
-	if(!(convert4 >> position.w)) 
-		position.w = 0;
-	temp = data.substr(index + 1, length);
-	data = temp;
+	while(!readData.empty()) {
+		SDL_Rect readAnimFrame;
 
-	index = data.find(comma);
-	length -= index + 1;
-	temp = data.substr(0, index);
-	std::istringstream convert5(temp);
-	if(!(convert5 >> position.h)) 
-		position.h = 0;
-	temp = data.substr(index + 1, length);
-	data = temp;
+		readAnimFrame.x 	= atoi(readData.front().c_str());
+		readAnimFrame.y 	= atoi(readData.front().c_str());
+		readAnimFrame.w 	= atoi(readData.front().c_str());
+		readAnimFrame.h 	= atoi(readData.front().c_str());
 
+		animCycle.push_back(readAnimFrame);
+	}
 }
 
 void Tile::SetAbsolutePosition(int x, int y) {

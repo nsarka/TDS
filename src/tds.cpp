@@ -45,12 +45,6 @@ Player* plyr = NULL;
 
 Camera* cam = NULL;
 
-std::string levelname;
-
-// Mouse position variables
-int mouseX, mouseY;
-SDL_Point cursor;
-
 // FPS counter stuff
 SDL_Texture* fps_texture;
 int count = 0;
@@ -83,10 +77,7 @@ int init() {
     cam = new Camera();
 
     // Load Level '01'
-    Level::loadLevel("01", &gameEntities);
-
-    // Set up cursor
-    cursor = { mouseX, mouseY };
+    //Level::loadLevel("01", &gameEntities);
 
     // Set up spritesheet handler and load all spritesheets
     sheet = new Spritesheet(renderer);
@@ -107,6 +98,7 @@ int init() {
 
 void handleEvents() {
     SDL_Event event;
+    std::string levelname = "";
 
     while( SDL_PollEvent( &event ) != 0 ) {
         // User requests quit
@@ -122,7 +114,7 @@ void handleEvents() {
 
                 Tile* t = new Tile("environment", tile_rect, 0);
                 //t->AddFrame(source_txt_pos);
-                t->frame = source_txt_pos;
+                t->animCycle.push_back(source_txt_pos);
 
                 gameEntities.push_back(t);
             } else {
@@ -131,7 +123,7 @@ void handleEvents() {
 
                 Tile* t = new Tile("environment", tile_rect, 0);
                 //t->AddFrame(source_txt_pos);
-                t->frame = source_txt_pos;
+                t->animCycle.push_back(source_txt_pos);
 
                 gameEntities.push_back(t);
             }
@@ -139,7 +131,6 @@ void handleEvents() {
 
         else if( event.type == SDL_KEYDOWN ) {
 
-            // Select surfaces based on key press
             switch( event.key.keysym.sym ) {
                 case SDLK_UP:
                 plyr->is_moving = true;
@@ -176,11 +167,11 @@ void handleEvents() {
                 Level::saveLevel(levelname, gameEntities);
                 break;
 
-                // case SDLK_F4:
-                // std::cout << "Enter Level Name: ";
-                // std::cin >> levelname;
-                // Level::loadLevel(levelname, &gameEntities);
-                // break;
+                case SDLK_F4:
+                std::cout << "Enter Level Name: ";
+                std::cin >> levelname;
+                Level::loadLevel(levelname, &gameEntities);
+                break;
 
                 default:
                 //std::cout << "Default key??" << std::endl;
@@ -189,7 +180,6 @@ void handleEvents() {
         }
         else if( event.type == SDL_KEYUP ) {
 
-            // Select surfaces based on key press
             switch( event.key.keysym.sym ) {
                 case SDLK_UP:
                 plyr->is_moving = false;
@@ -221,16 +211,6 @@ void update() {
 
     cam->absoluteMoveCameraX(512 - 64 - (plyr->position.x));
     cam->absoluteMoveCameraY(384 - 64 - (plyr->position.y));
-
-    // Update mouse position variables
-    SDL_GetMouseState(&mouseX, &mouseY);
-
-    // Update the offset of camera to cursor
-    mouseX -= cam->getOffsetX();
-    mouseY -= cam->getOffsetY();
-
-    // Update cursor
-    cursor = { mouseX, mouseY };
 }
 
 void render() {

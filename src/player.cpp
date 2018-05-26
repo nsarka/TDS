@@ -1,7 +1,7 @@
 #include "../include/player.h"
 
 Player::Player(Spritesheet* sheet, std::string spr_path, int pclass, SDL_Rect pos) {
-	animFrame = 0;
+	currentFrame = 0;
 	spr_sheet_name = std::string("player");
 	player_class = pclass;
 	position = pos;
@@ -30,21 +30,21 @@ void Player::Draw(SDL_Renderer* renderer, Spritesheet* sheet) {
 		position.h
 	};
 
-    SDL_RenderCopy(renderer, sheet->getTexture(spr_sheet_name), &animCycle.at(animFrame), &camAdjusted);
+    SDL_RenderCopy(renderer, sheet->getTexture(spr_sheet_name), &animCycle.at(currentFrame), &camAdjusted);
 
 	extern int count;
 
-	if(count % 10 == 0) {
+	if(count % animSpeed == 0) {
 		if(is_moving) {
-			if(animFrame < MAX_PLAYER_FRAMES) {
-				animFrame++;
+			if(currentFrame < MAX_PLAYER_FRAMES) {
+				currentFrame++;
 			} else {
-				animFrame = 0;
+				currentFrame = 0;
 			}
 		} else {
 			// Not correct for all player spritesheets, but usually the first frame is the one where the character isnt in the middle of a run animation
-			if(animFrame != 0) {
-				animFrame = 0;
+			if(currentFrame != 0) {
+				currentFrame = 0;
 			}
 		}
 	}
