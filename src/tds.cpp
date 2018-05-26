@@ -265,7 +265,7 @@ int main( int argc, char* args[] ) {
 	Uint32 frameStart;
     int frameTime;
 
-    char buffer [64];
+    char buffer [128];
     float fr;
 
     while(!quit) {
@@ -275,7 +275,7 @@ int main( int argc, char* args[] ) {
 
         fr = count / (fps.getTicks() / 1000.f);
 
-        snprintf(buffer, 64, "FPS: %2.2f X: %i Y: %i Ents: %i", fr, plyr->position.x, plyr->position.y, gameEntities.size());
+        snprintf(buffer, 128, "FPS: %2.2f X: %i Y: %i Ents: %i", fr, plyr->position.x, plyr->position.y, gameEntities.size());
 
         int w, h;
         TTF_SizeText(textHandler->font, buffer, &w, &h);
@@ -286,6 +286,7 @@ int main( int argc, char* args[] ) {
         handleEvents();
         update();
         render();
+        SDL_DestroyTexture(fps_texture);
 
         // Calculating frame time
         frameTime = SDL_GetTicks() - frameStart;
