@@ -265,7 +265,7 @@ int main( int argc, char* args[] ) {
 	Uint32 frameStart;
     int frameTime;
 
-    char buffer [8];
+    char buffer [64];
     float fr;
 
     while(!quit) {
@@ -275,7 +275,12 @@ int main( int argc, char* args[] ) {
 
         fr = count / (fps.getTicks() / 1000.f);
 
-        snprintf(buffer, 8, "%2.2f", fr);
+        snprintf(buffer, 64, "FPS: %2.2f X: %i Y: %i Ents: %i", fr, plyr->position.x, plyr->position.y, gameEntities.size());
+
+        int w, h;
+        TTF_SizeText(textHandler->font, buffer, &w, &h);
+        textHandler->fps.w = w;
+        textHandler->fps.h = h;
         fps_texture = textHandler->RenderText(renderer, std::string(buffer));
 
         handleEvents();
