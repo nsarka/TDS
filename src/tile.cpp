@@ -55,7 +55,7 @@ std::string Tile::Serialize() {
 		ss << rect.h << ",";
 	}
 
-	//ss << "|,";
+	ss << "+,";
 
 	return ss.str();
 }
@@ -98,16 +98,47 @@ void Tile::Deserialize(std::string lineData) {
 	// "|"
 	readData.pop();
 
-	while(!readData.empty()) {
+	while(readData.front() != "+") {
 		SDL_Rect readAnimFrame;
 
 		readAnimFrame.x 	= atoi(readData.front().c_str());
+		readData.pop();
+
 		readAnimFrame.y 	= atoi(readData.front().c_str());
+		readData.pop();
+
 		readAnimFrame.w 	= atoi(readData.front().c_str());
+		readData.pop();
+
 		readAnimFrame.h 	= atoi(readData.front().c_str());
+		readData.pop();
 
 		animCycle.push_back(readAnimFrame);
 	}
+
+	//DebugPrint();
+}
+
+void Tile::DebugPrint() {
+	std::cout << position.x << ",";
+	std::cout << position.y << ",";
+	std::cout << position.w << ",";
+	std::cout << position.h << ",";
+	std::cout << physics << ",";
+	std::cout << spr_sheet_name << ",";
+	std::cout << currentFrame << ",";
+	std::cout << animSpeed << ",";
+
+	std::cout << "|,";		// Using | to denote that the next field has variable # data values
+
+	for(SDL_Rect rect : animCycle) {
+		std::cout << rect.x << ",";
+		std::cout << rect.y << ",";
+		std::cout << rect.w << ",";
+		std::cout << rect.h << ",";
+	}
+
+	std::cout << "+," << std::endl;
 }
 
 void Tile::SetAbsolutePosition(int x, int y) {

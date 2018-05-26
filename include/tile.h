@@ -24,6 +24,7 @@ class Tile: public Entity {
         SDL_Rect position;
         // Rectangles that correspond to each frame in that entity's animation cycle
         std::vector<SDL_Rect> animCycle;
+        void DebugPrint();
 
     private:
         std::string spr_sheet_name;

@@ -77,7 +77,7 @@ int init() {
     cam = new Camera();
 
     // Load Level '01'
-    //Level::loadLevel("01", &gameEntities);
+    Level::loadLevel("01", &gameEntities);
 
     // Set up spritesheet handler and load all spritesheets
     sheet = new Spritesheet(renderer);
@@ -157,7 +157,7 @@ void handleEvents() {
 
                 case SDLK_F1:
                 drawFPS = !drawFPS;
-                std::cout << "Toggled FPS Draw" << std::endl;
+                std::cout << "FPS Draw: " << ( drawFPS ? "On" : "Off" ) << std::endl;
                 break;
 
                 case SDLK_F3:
@@ -165,12 +165,14 @@ void handleEvents() {
                 std::cin >> levelname;
                 std::cout << "Saving level '" << levelname << "' ..." << std::endl;
                 Level::saveLevel(levelname, gameEntities);
+                levelname = "";
                 break;
 
                 case SDLK_F4:
                 std::cout << "Enter Level Name: ";
                 std::cin >> levelname;
                 Level::loadLevel(levelname, &gameEntities);
+                levelname = "";
                 break;
 
                 default:
