@@ -109,7 +109,23 @@ void handleEvents() {
         if( event.type == SDL_MOUSEBUTTONDOWN ) {
             //If the left mouse button was released
             if( event.button.button == SDL_BUTTON_LEFT ) {
-                SDL_Rect tile_rect = { (event.button.x-64) - cam->getOffsetX(), (event.button.y-64) - cam->getOffsetY(), 128, 128 };
+
+                int xPos = event.button.x - cam->getOffsetX();
+                int yPos = event.button.y - cam->getOffsetY();
+
+                // Snap x,y coordinates to the 128x128 pixel grid for left mouse click
+                xPos -= xPos % 128;
+                yPos -= yPos % 128;
+
+                if(xPos % 128 > 64) {
+                    xPos += 128;
+                }
+
+                if(yPos % 128 > 64) {
+                    yPos += 128;
+                }
+                
+                SDL_Rect tile_rect = { xPos, yPos, 128, 128 };
                 SDL_Rect source_txt_pos = { 112, 35, 31, 27 };
 
                 Tile* t = new Tile("environment", tile_rect, 0);
@@ -223,6 +239,22 @@ void update() {
     cam->absoluteMoveCameraY(384 - 64 - (plyr->position.y));
 }
 
+void drawGrid() {
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
+
+    int startX = (cam->getOffsetX() % 128) - 128;
+    int startY = (cam->getOffsetY() % 128) - 128;
+
+    for(int x = startX; x <= 1024 + startX + 128; x += 128) {
+        for(int y = startY; y <= 768 + startY + 128; y += 128) {
+            SDL_RenderDrawLine(renderer, x, y, x+128, y);
+            SDL_RenderDrawLine(renderer, x, y, x, y+128);
+        }
+    }
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+}
+
 void render() {
     if( SDL_RenderClear(renderer) != 0 ) {
         std::cout << "Error: " << SDL_GetError() << std::endl;
@@ -240,6 +272,7 @@ void render() {
     plyr->Draw(renderer, sheet);
 
     if(drawFPS) {
+        drawGrid();
         textHandler->DrawTextToScreen(renderer, std::string(buffer));
     }
 
