@@ -124,9 +124,17 @@ void handleEvents() {
                 if(yPos % 128 > 64) {
                     yPos += 128;
                 }
+
+                if(yPos < 0) {
+                    yPos -= 128;
+                }
+
+                if(xPos < 0) {
+                    xPos -= 128;
+                }
                 
                 SDL_Rect tile_rect = { xPos, yPos, 128, 128 };
-                SDL_Rect source_txt_pos = { 112, 35, 31, 27 };
+                SDL_Rect source_txt_pos = { 32, 16, 16, 16 };
 
                 Tile* t = new Tile("environment", tile_rect, 0);
                 //t->AddFrame(source_txt_pos);
