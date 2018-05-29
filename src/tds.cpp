@@ -46,7 +46,7 @@ Player* plyr = NULL;
 Camera* cam = NULL;
 
 // FPS counter stuff
-SDL_Texture* fps_texture;
+char buffer [128];
 int count = 0;
 bool drawFPS = true;
 
@@ -232,10 +232,10 @@ void render() {
     plyr->Draw(renderer, sheet);
 
     if(drawFPS) {
-        SDL_RenderCopy(renderer, fps_texture, NULL, &textHandler->fps);
+        textHandler->DrawTextToScreen(renderer, std::string(buffer));
     }
 
-    // Draw renderer
+    // Draw to screen
     SDL_RenderPresent(renderer);
 }
 
@@ -249,6 +249,9 @@ void cleanUp() {
     // Free all textures
     sheet->~Spritesheet();
 
+    // Free game font
+    textHandler->~Text();
+
     SDL_Quit();
 }
 
@@ -259,42 +262,21 @@ int main( int argc, char* args[] ) {
     }
 
     Timer fps;
-
     fps.start();
-
-	Uint32 frameStart;
-    int frameTime;
-
-    char buffer [128];
-    float fr;
 
     while(!quit) {
 
-        // Get the time in miliseconds game's been running
-        frameStart = SDL_GetTicks();
-
-        fr = count / (fps.getTicks() / 1000.f);
-
-        snprintf(buffer, 128, "FPS: %2.2f X: %i Y: %i Ents: %i", fr, plyr->position.x, plyr->position.y, gameEntities.size());
-
-        int w, h;
-        TTF_SizeText(textHandler->font, buffer, &w, &h);
-        textHandler->fps.w = w;
-        textHandler->fps.h = h;
-        fps_texture = textHandler->RenderText(renderer, std::string(buffer));
+        // Update game debug text
+        if(drawFPS) {
+            snprintf(buffer, 128, "FPS: %2.2f X: %i Y: %i Ents: %i", fps.fr, plyr->position.x, plyr->position.y, gameEntities.size());
+        }
 
         handleEvents();
         update();
         render();
-        SDL_DestroyTexture(fps_texture);
 
-        // Calculating frame time
-        frameTime = SDL_GetTicks() - frameStart;
-
-        // Check to see if we need to delay
-        if(TICKS_PER_FRAME > frameTime) {
-            SDL_Delay(TICKS_PER_FRAME - frameTime);
-        }
+        // Wait till 60 fps
+        fps.waitFPS(TICKS_PER_FRAME);
     }
 
     cleanUp();
