@@ -17,9 +17,23 @@ Player::~Player() {
 
 }
 
-void Player::Move(int x, int y) {
-	position.x += x;
-	position.y += y;
+void Player::Update() {
+
+	if(movingRight) {
+		position.x += 5;
+	}
+
+	if(movingLeft) {
+		position.x -= 5;
+	}
+
+	if(movingUp) {
+		position.y -= 5;
+	}
+	
+	if(movingDown) {
+		position.y += 5;
+	}
 }
 
 void Player::Draw(SDL_Renderer* renderer, Spritesheet* sheet) {

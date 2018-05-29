@@ -12,19 +12,31 @@ class Player: public Entity {
 		~Player();
 
         void Draw(SDL_Renderer* renderer, Spritesheet* sheet);
-        void Move(int x, int y);
+
+        void SetMovingRight(bool val) { movingRight = val; };
+        void SetMovingLeft(bool val) { movingLeft = val; };
+        void SetMovingUp(bool val) { movingUp = val; };
+        void SetMovingDown(bool val) { movingDown = val; };
+
         std::string Serialize() { return std::string(""); };
         void Deserialize(std::string lineData){};
+        void Update();
 
         SDL_Rect position;
 
         bool is_moving = false;
 
     private:
+
         // For when we get to it
         int player_class;
 
         std::string spr_sheet_name;
+
+        bool movingRight = false;
+        bool movingLeft = false;
+        bool movingUp = false;
+        bool movingDown = false;
 
         // Rectangles that correspond to each frame in that entity's animation cycle
         std::vector<SDL_Rect> animCycle;

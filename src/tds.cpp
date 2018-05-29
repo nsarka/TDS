@@ -131,27 +131,29 @@ void handleEvents() {
 
         else if( event.type == SDL_KEYDOWN ) {
 
+            // Out of the switch to prevent some blockiness when rapidly switching keys
+            if(event.key.keysym.sym == SDLK_UP) {
+                plyr->SetMovingUp(true);
+                plyr->is_moving = true;
+            }
+
+            if(event.key.keysym.sym == SDLK_RIGHT) {
+                plyr->SetMovingRight(true);
+                plyr->is_moving = true;
+            }
+
+            if(event.key.keysym.sym == SDLK_DOWN) {
+                plyr->SetMovingDown(true);
+                plyr->is_moving = true;
+            }
+
+            if(event.key.keysym.sym == SDLK_LEFT) {
+                plyr->SetMovingLeft(true);
+                plyr->is_moving = true;
+            }
+
+
             switch( event.key.keysym.sym ) {
-                case SDLK_UP:
-                plyr->is_moving = true;
-                plyr->Move(0,-5);
-                break;
-
-                case SDLK_DOWN:
-                plyr->is_moving = true;
-                plyr->Move(0,5);
-                break;
-
-                case SDLK_LEFT:
-                plyr->is_moving = true;
-                plyr->Move(-5,0);
-                break;
-
-                case SDLK_RIGHT:
-                plyr->is_moving = true;
-                plyr->Move(5,0);
-                break;
-
                 case SDLK_ESCAPE:
                 break;
 
@@ -182,23 +184,27 @@ void handleEvents() {
         }
         else if( event.type == SDL_KEYUP ) {
 
+            if(event.key.keysym.sym == SDLK_UP) {
+                plyr->SetMovingUp(false);
+                plyr->is_moving = false;
+            }
+
+            if(event.key.keysym.sym == SDLK_RIGHT) {
+                plyr->SetMovingRight(false);
+                plyr->is_moving = false;
+            }
+
+            if(event.key.keysym.sym == SDLK_DOWN) {
+                plyr->SetMovingDown(false);
+                plyr->is_moving = false;
+            }
+
+            if(event.key.keysym.sym == SDLK_LEFT) {
+                plyr->SetMovingLeft(false);
+                plyr->is_moving = false;
+            }
+
             switch( event.key.keysym.sym ) {
-                case SDLK_UP:
-                plyr->is_moving = false;
-                break;
-
-                case SDLK_DOWN:
-                plyr->is_moving = false;
-                break;
-
-                case SDLK_LEFT:
-                plyr->is_moving = false;
-                break;
-
-                case SDLK_RIGHT:
-                plyr->is_moving = false;
-                break;
-
                 default:
                 //std::cout << "Default key??" << std::endl;
                 break;
@@ -210,6 +216,8 @@ void handleEvents() {
 void update() {
     // Update frame count
     count++;
+
+    plyr->Update();
 
     cam->absoluteMoveCameraX(512 - 64 - (plyr->position.x));
     cam->absoluteMoveCameraY(384 - 64 - (plyr->position.y));
