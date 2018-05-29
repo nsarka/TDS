@@ -14,10 +14,16 @@ class Player: public Entity {
         void Move(int x, int y);
         std::string Serialize() { return std::string(""); };
         void Deserialize(std::string data){};
-
+        
         SDL_Rect position;
 
         bool is_moving = false;
+
+        struct Vector2 {
+            float x, y;
+        };
+
+        Vector2 playerMovement;
 
     private:
         // For when we get to it
