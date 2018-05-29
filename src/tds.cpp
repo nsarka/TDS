@@ -1,6 +1,6 @@
 /*
 	** TDS v1.0 **
-	Nick Sarkauskas and Drew Dimmick
+	Nick Sarkauskas, Drew Dimmick, and Mack Blaurock
 	Copyright 2018
 */
 
