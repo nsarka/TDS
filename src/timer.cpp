@@ -88,3 +88,16 @@ bool Timer::isStarted() {
 bool Timer::isPaused() {
     return paused;
 }
+
+void Timer::waitFPS(int ticksPerFrame) {
+    // Calculating frame time
+    frameTime = SDL_GetTicks() - frameStart;
+
+    // Check to see if we need to delay
+    if(ticksPerFrame > frameTime) {
+        SDL_Delay(ticksPerFrame - frameTime);
+    }
+
+    frameStart = SDL_GetTicks();
+    fr = count / (getTicks() / 1000.f);
+}

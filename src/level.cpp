@@ -15,27 +15,33 @@ void Level::saveLevel(std::string levelname, std::vector<Entity*> gameEntities) 
 }
 
 void Level::loadLevel(std::string levelname, std::vector<Entity*> * gameEntities) {
+
+    std::cout << "Opening " << levelname << "..." << std::endl;
+
     std::ifstream level_file;
     level_file.open(levelname + ".level");
 
-    // if(!level_file.is_open()) {
-    //     std::cout << "Level not found" << std::endl;
-    //     return;
-    // }
+    if (level_file.is_open()) {
 
-    getline(level_file, levelname);
-    std::cout << "Openning " << levelname << "..." << std::endl;
+        getline(level_file, levelname);
 
-    std::string data;
+        std::string data;
 
-    gameEntities->clear();
-    
-    while(!level_file.eof()) {
-        Tile *ent = new Tile();
-        getline(level_file, data);
-        ent->Deserialize(data);
-        gameEntities->push_back(ent);
+        gameEntities->clear();
+        
+        while(!level_file.eof()) {
+
+            Tile *ent = new Tile();
+
+            getline(level_file, data);
+
+            if(data.length() > 0) {
+                ent->Deserialize(data);
+                gameEntities->push_back(ent);
+            }
+        }
+
+    } else {
+        std::cout << "[!] Couldn't open " << levelname << ".level" << std::endl;
     }
-    
-    
 }

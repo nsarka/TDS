@@ -1,6 +1,6 @@
 /*
 	** TDS v1.0 **
-	Nick Sarkauskas and Drew Dimmick
+	Nick Sarkauskas, Drew Dimmick, and Mack Blaurock
 	Copyright 2018
 */
 
@@ -45,14 +45,8 @@ Player* plyr = NULL;
 
 Camera* cam = NULL;
 
-std::string levelname;
-
-// Mouse position variables
-int mouseX, mouseY;
-SDL_Point cursor;
-
 // FPS counter stuff
-SDL_Texture* fps_texture;
+char buffer [128];
 int count = 0;
 bool drawFPS = true;
 
@@ -85,9 +79,6 @@ int init() {
     // Load Level '01'
     Level::loadLevel("01", &gameEntities);
 
-    // Set up cursor
-    cursor = { mouseX, mouseY };
-
     // Set up spritesheet handler and load all spritesheets
     sheet = new Spritesheet(renderer);
     sheet->loadTexture(std::string("../assets/environment/darkdimension.png"), std::string("environment"));
@@ -107,6 +98,7 @@ int init() {
 
 void handleEvents() {
     SDL_Event event;
+    std::string levelname = "";
 
     while( SDL_PollEvent( &event ) != 0 ) {
         // User requests quit
@@ -117,12 +109,36 @@ void handleEvents() {
         if( event.type == SDL_MOUSEBUTTONDOWN ) {
             //If the left mouse button was released
             if( event.button.button == SDL_BUTTON_LEFT ) {
-                SDL_Rect tile_rect = { (event.button.x-64) - cam->getOffsetX(), (event.button.y-64) - cam->getOffsetY(), 128, 128 };
-                SDL_Rect source_txt_pos = { 112, 35, 31, 27 };
+
+                int xPos = event.button.x - cam->getOffsetX();
+                int yPos = event.button.y - cam->getOffsetY();
+
+                // Snap x,y coordinates to the 128x128 pixel grid for left mouse click
+                xPos -= xPos % 128;
+                yPos -= yPos % 128;
+
+                if(xPos % 128 > 64) {
+                    xPos += 128;
+                }
+
+                if(yPos % 128 > 64) {
+                    yPos += 128;
+                }
+
+                if(yPos < 0) {
+                    yPos -= 128;
+                }
+
+                if(xPos < 0) {
+                    xPos -= 128;
+                }
+                
+                SDL_Rect tile_rect = { xPos, yPos, 128, 128 };
+                SDL_Rect source_txt_pos = { 32, 16, 16, 16 };
 
                 Tile* t = new Tile("environment", tile_rect, 0);
                 //t->AddFrame(source_txt_pos);
-                t->frame = source_txt_pos;
+                t->animCycle.push_back(source_txt_pos);
 
                 gameEntities.push_back(t);
             } else {
@@ -131,7 +147,7 @@ void handleEvents() {
 
                 Tile* t = new Tile("environment", tile_rect, 0);
                 //t->AddFrame(source_txt_pos);
-                t->frame = source_txt_pos;
+                t->animCycle.push_back(source_txt_pos);
 
                 gameEntities.push_back(t);
             }
@@ -139,34 +155,35 @@ void handleEvents() {
 
         else if( event.type == SDL_KEYDOWN ) {
 
-            // Select surfaces based on key press
+            // Out of the switch to prevent some blockiness when rapidly switching keys
+            if(event.key.keysym.sym == SDLK_UP) {
+                plyr->SetMovingUp(true);
+                plyr->is_moving = true;
+            }
+
+            if(event.key.keysym.sym == SDLK_RIGHT) {
+                plyr->SetMovingRight(true);
+                plyr->is_moving = true;
+            }
+
+            if(event.key.keysym.sym == SDLK_DOWN) {
+                plyr->SetMovingDown(true);
+                plyr->is_moving = true;
+            }
+
+            if(event.key.keysym.sym == SDLK_LEFT) {
+                plyr->SetMovingLeft(true);
+                plyr->is_moving = true;
+            }
+
+
             switch( event.key.keysym.sym ) {
-                case SDLK_UP:
-                plyr->is_moving = true;
-                plyr->Move(0,-5);
-                break;
-
-                case SDLK_DOWN:
-                plyr->is_moving = true;
-                plyr->Move(0,5);
-                break;
-
-                case SDLK_LEFT:
-                plyr->is_moving = true;
-                plyr->Move(-5,0);
-                break;
-
-                case SDLK_RIGHT:
-                plyr->is_moving = true;
-                plyr->Move(5,0);
-                break;
-
                 case SDLK_ESCAPE:
                 break;
 
                 case SDLK_F1:
                 drawFPS = !drawFPS;
-                std::cout << "Toggled FPS Draw" << std::endl;
+                std::cout << "FPS Draw: " << ( drawFPS ? "On" : "Off" ) << std::endl;
                 break;
 
                 case SDLK_F3:
@@ -174,13 +191,15 @@ void handleEvents() {
                 std::cin >> levelname;
                 std::cout << "Saving level '" << levelname << "' ..." << std::endl;
                 Level::saveLevel(levelname, gameEntities);
+                levelname = "";
                 break;
 
-                // case SDLK_F4:
-                // std::cout << "Enter Level Name: ";
-                // std::cin >> levelname;
-                // Level::loadLevel(levelname, &gameEntities);
-                // break;
+                case SDLK_F4:
+                std::cout << "Enter Level Name: ";
+                std::cin >> levelname;
+                Level::loadLevel(levelname, &gameEntities);
+                levelname = "";
+                break;
 
                 default:
                 //std::cout << "Default key??" << std::endl;
@@ -189,24 +208,27 @@ void handleEvents() {
         }
         else if( event.type == SDL_KEYUP ) {
 
-            // Select surfaces based on key press
+            if(event.key.keysym.sym == SDLK_UP) {
+                plyr->SetMovingUp(false);
+                plyr->is_moving = false;
+            }
+
+            if(event.key.keysym.sym == SDLK_RIGHT) {
+                plyr->SetMovingRight(false);
+                plyr->is_moving = false;
+            }
+
+            if(event.key.keysym.sym == SDLK_DOWN) {
+                plyr->SetMovingDown(false);
+                plyr->is_moving = false;
+            }
+
+            if(event.key.keysym.sym == SDLK_LEFT) {
+                plyr->SetMovingLeft(false);
+                plyr->is_moving = false;
+            }
+
             switch( event.key.keysym.sym ) {
-                case SDLK_UP:
-                plyr->is_moving = false;
-                break;
-
-                case SDLK_DOWN:
-                plyr->is_moving = false;
-                break;
-
-                case SDLK_LEFT:
-                plyr->is_moving = false;
-                break;
-
-                case SDLK_RIGHT:
-                plyr->is_moving = false;
-                break;
-
                 default:
                 //std::cout << "Default key??" << std::endl;
                 break;
@@ -219,18 +241,26 @@ void update() {
     // Update frame count
     count++;
 
+    plyr->Update();
+
     cam->absoluteMoveCameraX(512 - 64 - (plyr->position.x));
     cam->absoluteMoveCameraY(384 - 64 - (plyr->position.y));
+}
 
-    // Update mouse position variables
-    SDL_GetMouseState(&mouseX, &mouseY);
+void drawGrid() {
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
 
-    // Update the offset of camera to cursor
-    mouseX -= cam->getOffsetX();
-    mouseY -= cam->getOffsetY();
+    int startX = (cam->getOffsetX() % 128) - 128;
+    int startY = (cam->getOffsetY() % 128) - 128;
 
-    // Update cursor
-    cursor = { mouseX, mouseY };
+    for(int x = startX; x <= 1024 + startX + 128; x += 128) {
+        for(int y = startY; y <= 768 + startY + 128; y += 128) {
+            SDL_RenderDrawLine(renderer, x, y, x+128, y);
+            SDL_RenderDrawLine(renderer, x, y, x, y+128);
+        }
+    }
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 }
 
 void render() {
@@ -250,10 +280,11 @@ void render() {
     plyr->Draw(renderer, sheet);
 
     if(drawFPS) {
-        SDL_RenderCopy(renderer, fps_texture, NULL, &textHandler->fps);
+        drawGrid();
+        textHandler->DrawTextToScreen(renderer, std::string(buffer));
     }
 
-    // Draw renderer
+    // Draw to screen
     SDL_RenderPresent(renderer);
 }
 
@@ -267,6 +298,9 @@ void cleanUp() {
     // Free all textures
     sheet->~Spritesheet();
 
+    // Free game font
+    textHandler->~Text();
+
     SDL_Quit();
 }
 
@@ -277,36 +311,21 @@ int main( int argc, char* args[] ) {
     }
 
     Timer fps;
-
     fps.start();
-
-	Uint32 frameStart;
-    int frameTime;
-
-    char buffer [8];
-    float fr;
 
     while(!quit) {
 
-        // Get the time in miliseconds game's been running
-        frameStart = SDL_GetTicks();
-
-        fr = count / (fps.getTicks() / 1000.f);
-
-        snprintf(buffer, 8, "%2.2f", fr);
-        fps_texture = textHandler->RenderText(renderer, std::string(buffer));
+        // Update game debug text
+        if(drawFPS) {
+            snprintf(buffer, 128, "FPS: %2.2f X: %i Y: %i Ents: %i", fps.fr, plyr->position.x, plyr->position.y, gameEntities.size());
+        }
 
         handleEvents();
         update();
         render();
 
-        // Calculating frame time
-        frameTime = SDL_GetTicks() - frameStart;
-
-        // Check to see if we need to delay
-        if(TICKS_PER_FRAME > frameTime) {
-            SDL_Delay(TICKS_PER_FRAME - frameTime);
-        }
+        // Wait till 60 fps
+        fps.waitFPS(TICKS_PER_FRAME);
     }
 
     cleanUp();
