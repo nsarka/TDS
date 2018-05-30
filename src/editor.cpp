@@ -92,3 +92,54 @@ void Editor::drawGrid(SDL_Renderer* renderer) {
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 }
+
+void Editor::loadSprites() {
+	std::ifstream level_file;
+    level_file.open("../assets/environment/environment.txt");
+
+    if (level_file.is_open()) {
+
+        std::string data;
+        
+        while(!level_file.eof()) {
+
+            getline(level_file, data);
+
+            if(data.length() > 0) {
+                Deserialize(data);
+            }
+        }
+
+    } else {
+        std::cout << "[!] Couldn't open 'environment.txt'" << std::endl;
+	}
+}
+		
+		
+void Editor::Deserialize(std::string lineData) {
+	SDL_Rect rect;
+    
+	std::stringstream ss;
+	ss << lineData;
+	std::queue<std::string> readData;
+
+	while(ss.good()) {
+		std::string substr;
+		getline(ss, substr, ',');
+		readData.push(substr);
+	}
+
+	readData.pop();
+	rect.x 			= atoi(readData.front().c_str());
+	readData.pop();
+
+	rect.y 			= atoi(readData.front().c_str());
+	readData.pop();
+
+	rect.w 			= atoi(readData.front().c_str());
+	readData.pop();
+
+	rect.h 			= atoi(readData.front().c_str());
+
+	addSourceRectToList(rect);
+}

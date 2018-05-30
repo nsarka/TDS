@@ -81,8 +81,9 @@ int init() {
 
     // Set up editor
     editor = new Editor();
-    SDL_Rect rect = { 32, 16, 16, 16 };
-    editor->addSourceRectToList(rect);
+        
+    // Load all the sprites
+    editor->loadSprites();
 
     // Load Level '01'
     Level::loadLevel("01", &gameEntities);

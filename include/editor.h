@@ -2,6 +2,11 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
+#include <iomanip>
+#include <locale>
+#include <queue>
+#include <fstream>
 
 #include "SDL2/SDL.h"
 
@@ -28,6 +33,8 @@ class Editor {
 		void handleEvents(SDL_Event event);
 		void drawGrid(SDL_Renderer* renderer);
 		void drawSelected(SDL_Renderer* renderer, int x, int y);
+		void loadSprites();
+		void Deserialize(std::string data);
 
 		void addSourceRectToList(SDL_Rect rect) { sourceRectList.push_back(rect); }
 
