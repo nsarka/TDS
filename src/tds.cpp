@@ -119,22 +119,22 @@ void handleEvents() {
         } else if( event.type == SDL_KEYDOWN ) {
 
             // Out of the switch to prevent some blockiness when rapidly switching keys
-            if(event.key.keysym.sym == SDLK_UP) {
+            if(event.key.keysym.sym == SDLK_w) {
                 plyr->SetMovingUp(true);
                 plyr->is_moving = true;
             }
 
-            if(event.key.keysym.sym == SDLK_RIGHT) {
+            if(event.key.keysym.sym == SDLK_d) {
                 plyr->SetMovingRight(true);
                 plyr->is_moving = true;
             }
 
-            if(event.key.keysym.sym == SDLK_DOWN) {
+            if(event.key.keysym.sym == SDLK_s) {
                 plyr->SetMovingDown(true);
                 plyr->is_moving = true;
             }
 
-            if(event.key.keysym.sym == SDLK_LEFT) {
+            if(event.key.keysym.sym == SDLK_a) {
                 plyr->SetMovingLeft(true);
                 plyr->is_moving = true;
             }
@@ -171,22 +171,22 @@ void handleEvents() {
         }
         else if( event.type == SDL_KEYUP ) {
 
-            if(event.key.keysym.sym == SDLK_UP) {
+            if(event.key.keysym.sym == SDLK_w) {
                 plyr->SetMovingUp(false);
                 plyr->is_moving = false;
             }
 
-            if(event.key.keysym.sym == SDLK_RIGHT) {
+            if(event.key.keysym.sym == SDLK_d) {
                 plyr->SetMovingRight(false);
                 plyr->is_moving = false;
             }
 
-            if(event.key.keysym.sym == SDLK_DOWN) {
+            if(event.key.keysym.sym == SDLK_s) {
                 plyr->SetMovingDown(false);
                 plyr->is_moving = false;
             }
 
-            if(event.key.keysym.sym == SDLK_LEFT) {
+            if(event.key.keysym.sym == SDLK_a) {
                 plyr->SetMovingLeft(false);
                 plyr->is_moving = false;
             }

@@ -51,11 +51,19 @@ void Editor::handleEvents(SDL_Event event) {
 	} else if( event.type == SDL_KEYDOWN ) {
 		switch( event.key.keysym.sym ) {
 
-			case SDLK_p:
+			case SDLK_UP:
 			std::cout << "Next sprite..." << std::endl;
 			source_rect_counter++;
 			if(source_rect_counter >= sourceRectList.size()) {
 				source_rect_counter = 0;
+			}
+			break;
+
+			case SDLK_DOWN:
+			std::cout << "Previous sprite..." << std::endl;
+			source_rect_counter--;
+			if(source_rect_counter < 0) {
+				source_rect_counter = sourceRectList.size() - 1;
 			}
 			break;
 
