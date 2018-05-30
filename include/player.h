@@ -20,6 +20,7 @@ class Player: public Entity {
 
         std::string Serialize() { return std::string(""); };
         void Deserialize(std::string data){};
+        void Update();
         
         SDL_Rect position;
 
