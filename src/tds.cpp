@@ -231,9 +231,8 @@ void render() {
     if(drawFPS) {
         editor->drawGrid(renderer);
         textHandler->DrawTextToScreen(renderer, std::string(buffer));
+        editor->drawSelected(renderer, xMouse, yMouse);
     }
-
-    editor->drawSelected(renderer, xMouse, yMouse);
 
     // Draw to screen
     SDL_RenderPresent(renderer);
