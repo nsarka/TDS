@@ -25,6 +25,7 @@
 #include "../include/tile.h"
 #include "../include/camera.h"
 #include "../include/level.h"
+#include "../include/editor.h"
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -42,8 +43,10 @@ Spritesheet* sheet = NULL;
 Text* textHandler = NULL;
 std::vector<Entity*> gameEntities;
 Player* plyr = NULL;
-
+Editor* editor = NULL;
 Camera* cam = NULL;
+
+int xMouse = 0, yMouse = 0;
 
 // FPS counter stuff
 char buffer [128];
@@ -76,6 +79,11 @@ int init() {
     // Set up camera
     cam = new Camera();
 
+    // Set up editor
+    editor = new Editor();
+    SDL_Rect rect = { 32, 16, 16, 16 };
+    editor->addSourceRectToList(rect);
+
     // Load Level '01'
     Level::loadLevel("01", &gameEntities);
 
@@ -104,56 +112,10 @@ void handleEvents() {
         // User requests quit
         if( event.type == SDL_QUIT ) {
             quit = true;
-        }
-
-        if( event.type == SDL_MOUSEBUTTONDOWN ) {
-            //If the left mouse button was released
-            if( event.button.button == SDL_BUTTON_LEFT ) {
-
-                int xPos = event.button.x - cam->getOffsetX();
-                int yPos = event.button.y - cam->getOffsetY();
-
-                // Snap x,y coordinates to the 128x128 pixel grid for left mouse click
-                xPos -= xPos % 128;
-                yPos -= yPos % 128;
-
-                if(xPos % 128 > 64) {
-                    xPos += 128;
-                }
-
-                if(yPos % 128 > 64) {
-                    yPos += 128;
-                }
-
-                if(yPos < 0) {
-                    yPos -= 128;
-                }
-
-                if(xPos < 0) {
-                    xPos -= 128;
-                }
-                
-                SDL_Rect tile_rect = { xPos, yPos, 128, 128 };
-                SDL_Rect source_txt_pos = { 32, 16, 16, 16 };
-
-                Tile* t = new Tile("environment", tile_rect, 0);
-                //t->AddFrame(source_txt_pos);
-                t->animCycle.push_back(source_txt_pos);
-
-                gameEntities.push_back(t);
-            } else {
-                SDL_Rect tile_rect = { (event.button.x-64) - cam->getOffsetX(), (event.button.y-64) - cam->getOffsetY(), 128, 128 };
-                SDL_Rect source_txt_pos = { 112, 67, 31, 26 };
-
-                Tile* t = new Tile("environment", tile_rect, 0);
-                //t->AddFrame(source_txt_pos);
-                t->animCycle.push_back(source_txt_pos);
-
-                gameEntities.push_back(t);
-            }
-        }
-
-        else if( event.type == SDL_KEYDOWN ) {
+        } else if( event.type == SDL_MOUSEMOTION ) {
+            xMouse = event.motion.x;
+            yMouse = event.motion.y;
+        } else if( event.type == SDL_KEYDOWN ) {
 
             // Out of the switch to prevent some blockiness when rapidly switching keys
             if(event.key.keysym.sym == SDLK_UP) {
@@ -234,6 +196,8 @@ void handleEvents() {
                 break;
             }
         }
+
+        editor->handleEvents(event);
     }
 }
 
@@ -245,22 +209,6 @@ void update() {
 
     cam->absoluteMoveCameraX(512 - 64 - (plyr->position.x));
     cam->absoluteMoveCameraY(384 - 64 - (plyr->position.y));
-}
-
-void drawGrid() {
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
-
-    int startX = (cam->getOffsetX() % 128) - 128;
-    int startY = (cam->getOffsetY() % 128) - 128;
-
-    for(int x = startX; x <= 1024 + startX + 128; x += 128) {
-        for(int y = startY; y <= 768 + startY + 128; y += 128) {
-            SDL_RenderDrawLine(renderer, x, y, x+128, y);
-            SDL_RenderDrawLine(renderer, x, y, x, y+128);
-        }
-    }
-
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 }
 
 void render() {
@@ -280,9 +228,11 @@ void render() {
     plyr->Draw(renderer, sheet);
 
     if(drawFPS) {
-        drawGrid();
+        editor->drawGrid(renderer);
         textHandler->DrawTextToScreen(renderer, std::string(buffer));
     }
+
+    editor->drawSelected(renderer, xMouse, yMouse);
 
     // Draw to screen
     SDL_RenderPresent(renderer);

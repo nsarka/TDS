@@ -29,6 +29,8 @@ class Tile: public Entity {
     private:
         std::string spr_sheet_name;
 
+        
+
         // Physics type
         int physics;
 };
