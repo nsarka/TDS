@@ -13,25 +13,19 @@ void Editor::handleEvents(SDL_Event event) {
 			int yPos = event.button.y - cam->getOffsetY();
 
 			// Snap x,y coordinates to the 128x128 pixel grid for left mouse click
-			xPos -= xPos % 128;
-			yPos -= yPos % 128;
-
-			if(xPos % 128 > 64) {
-				xPos += 128;
+			if (xPos > 0) {
+				xPos -= xPos % 128;
+			} else {
+				xPos -= xPos % 128;
+				xPos -= 128;
 			}
-
-			if(yPos % 128 > 64) {
-				yPos += 128;
-			}
-
-			if(yPos < 0) {
+			if (yPos > 0) {
+				yPos -= yPos % 128;
+			} else {
+				yPos -= yPos % 128;
 				yPos -= 128;
 			}
 
-			if(xPos < 0) {
-				xPos -= 128;
-			}
-			
 			SDL_Rect tile_rect = { xPos, yPos, 128, 128 };
 
 			Tile* t = new Tile("environment", tile_rect, 0);
@@ -54,7 +48,7 @@ void Editor::handleEvents(SDL_Event event) {
 			case SDLK_UP:
 			std::cout << "Next sprite..." << std::endl;
 			source_rect_counter++;
-			if(source_rect_counter >= sourceRectList.size()) {
+			if(source_rect_counter >= (int)sourceRectList.size()) {
 				source_rect_counter = 0;
 			}
 			break;
