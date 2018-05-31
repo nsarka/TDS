@@ -165,6 +165,7 @@ void handleEvents() {
 
             switch( event.key.keysym.sym ) {
                 case SDLK_ESCAPE:
+                inMainMenu = true;
                 break;
 
                 case SDLK_F1:
@@ -216,7 +217,6 @@ void handleEvents() {
 
             switch( event.key.keysym.sym ) {
                 case SDLK_ESCAPE:
-                inMainMenu = true;
                 break;
 
                 default:
@@ -292,6 +292,7 @@ int main( int argc, char* args[] ) {
 
 mainmenu_label:
     while(inMainMenu) {
+        count++;
         mainMenu->HandleEvents();
         mainMenu->Draw(renderer);
 

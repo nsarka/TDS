@@ -80,15 +80,15 @@ void Menu::HandleEvents() {
 			}
 		} else if( event.type == SDL_KEYDOWN ) {
             switch( event.key.keysym.sym ) {
+				case SDLK_ESCAPE:
+				inMainMenu = false;
+				break;
+				
                 default:
                 break;
             }
         } else if( event.type == SDL_KEYUP ) {
             switch( event.key.keysym.sym ) {
-				case SDLK_ESCAPE:
-				inMainMenu = false;
-                break;
-
                 default:
                 break;
             }
