@@ -26,6 +26,7 @@
 #include "../include/camera.h"
 #include "../include/level.h"
 #include "../include/editor.h"
+#include "../include/menu.h"
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -33,6 +34,7 @@ const int FPS = 60;
 const int TICKS_PER_FRAME = 1000 / FPS;
 
 bool quit = false;
+bool inMainMenu = true;
 
 // SDL2 stuff
 SDL_Window* window = NULL;
@@ -45,6 +47,7 @@ std::vector<Entity*> gameEntities;
 Player* plyr = NULL;
 Editor* editor = NULL;
 Camera* cam = NULL;
+Menu* mainMenu = NULL;
 
 int xMouse = 0, yMouse = 0;
 
@@ -91,6 +94,10 @@ int init() {
     // Set up spritesheet handler and load all spritesheets
     sheet = new Spritesheet(renderer);
     sheet->loadTexture(std::string("../assets/environment/darkdimension.png"), std::string("environment"));
+    sheet->loadTexture(std::string("../assets/menu/background.png"), std::string("mainmenu_background"));
+    sheet->loadTexture(std::string("../assets/menu/button.png"), std::string("button"));
+    sheet->loadTexture(std::string("../assets/menu/button_hover.png"), std::string("button_hover"));
+    sheet->loadTexture(std::string("../assets/menu/button_click.png"), std::string("button_click"));
 
     SDL_Rect p_pos = {1024/2, 768/2, 128, 128};
 
@@ -101,6 +108,22 @@ int init() {
     textHandler = new Text(std::string("../assets/font/m5x7.ttf"));
 
     sheet->printAllTexturesLoaded();
+
+    // Set up main menu
+    mainMenu = new Menu();
+
+    MenuItem start;
+
+	start.hoverSound            = std::string("button_hover");
+    start.clickSound            = std::string("button_click");
+
+	SDL_Rect pos = {512, 384, 200, 100};
+    start.pos = pos;
+
+    start.Click = buttonFuncs::start_singleplayer;
+
+    mainMenu->background_texture = std::string("mainmenu_background");
+    mainMenu->AddItem(start);
 
 	return 0;
 }
@@ -192,6 +215,10 @@ void handleEvents() {
             }
 
             switch( event.key.keysym.sym ) {
+                case SDLK_ESCAPE:
+                inMainMenu = true;
+                break;
+
                 default:
                 //std::cout << "Default key??" << std::endl;
                 break;
@@ -263,7 +290,16 @@ int main( int argc, char* args[] ) {
     Timer fps;
     fps.start();
 
-    while(!quit) {
+mainmenu_label:
+    while(inMainMenu) {
+        mainMenu->HandleEvents();
+        mainMenu->Draw(renderer);
+
+        // Wait till 60 fps
+        fps.waitFPS(TICKS_PER_FRAME);
+    }
+
+    while(!quit && !inMainMenu) {
 
         // Update game debug text
         if(drawFPS) {
@@ -276,6 +312,10 @@ int main( int argc, char* args[] ) {
 
         // Wait till 60 fps
         fps.waitFPS(TICKS_PER_FRAME);
+    }
+
+    if(inMainMenu) {
+        goto mainmenu_label;
     }
 
     cleanUp();
