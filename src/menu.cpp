@@ -69,10 +69,8 @@ void Menu::HandleEvents() {
 				int xPos = event.button.x;
 				int yPos = event.button.y;
 
-				SDL_Point p = {xPos, yPos};
-
 				for(MenuItem item : menuItems) {
-					if(Physics::checkMouseCollision(item.pos, p)) {
+					if(Physics::checkMouseCollision(item.pos, {xPos, yPos})) {
 						item.Click();
 					}
 				}
@@ -80,7 +78,13 @@ void Menu::HandleEvents() {
 			} else {
 
 			}
+		} else if( event.type == SDL_MOUSEMOTION ) {
+
+			xMouse = event.motion.x;
+			yMouse = event.motion.y;
+
 		} else if( event.type == SDL_KEYDOWN ) {
+
             switch( event.key.keysym.sym ) {
 				case SDLK_ESCAPE:
 				inMainMenu = false;
@@ -96,6 +100,14 @@ void Menu::HandleEvents() {
             }
         }
     }
+
+	for(unsigned int index = 0; index < menuItems.size(); index++) {
+		if(Physics::checkMouseCollision(menuItems[index].pos, {xMouse, yMouse})) {
+			menuItems[index].state = HOVER;
+		} else {
+			menuItems[index].state = NORMAL;
+		}
+	}
 }
 
 void Menu::AddItem(MenuItem item) {

@@ -14,6 +14,9 @@ extern Spritesheet* sheet;
 extern bool inMainMenu;
 extern bool quit;
 
+extern int xMouse;
+extern int yMouse;
+
 enum buttonState {
 	NORMAL = 0,
 	HOVER,
