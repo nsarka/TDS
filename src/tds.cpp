@@ -112,18 +112,22 @@ int init() {
     // Set up main menu
     mainMenu = new Menu();
 
+    // Menu items
     MenuItem start;
-
 	start.hoverSound            = std::string("button_hover");
     start.clickSound            = std::string("button_click");
-
-	SDL_Rect pos = {512, 384, 200, 100};
-    start.pos = pos;
-
+    start.pos = {412, 384, 200, 100};
     start.Click = buttonFuncs::start_singleplayer;
+
+    MenuItem quit;
+	quit.hoverSound            = std::string("button_hover");
+    quit.clickSound            = std::string("button_click");
+    quit.pos = {412, 584, 200, 100};
+    quit.Click = buttonFuncs::quit_game;
 
     mainMenu->background_texture = std::string("mainmenu_background");
     mainMenu->AddItem(start);
+    mainMenu->AddItem(quit);
 
 	return 0;
 }
@@ -291,7 +295,7 @@ int main( int argc, char* args[] ) {
     fps.start();
 
 mainmenu_label:
-    while(inMainMenu) {
+    while(inMainMenu && !quit) {
         count++;
         mainMenu->HandleEvents();
         mainMenu->Draw(renderer);
@@ -300,7 +304,7 @@ mainmenu_label:
         fps.waitFPS(TICKS_PER_FRAME);
     }
 
-    while(!quit && !inMainMenu) {
+    while(!quit) {
 
         // Update game debug text
         if(drawFPS) {
@@ -313,12 +317,13 @@ mainmenu_label:
 
         // Wait till 60 fps
         fps.waitFPS(TICKS_PER_FRAME);
-    }
 
-    if(inMainMenu) {
-        goto mainmenu_label;
+        if(inMainMenu) {
+            goto mainmenu_label;
+        }
     }
 
     cleanUp();
+
     return 0;
 }

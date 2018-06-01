@@ -12,8 +12,10 @@ void buttonFuncs::options() {
 
 }
 
-void buttonFuncs::exit() {
-
+void buttonFuncs::quit_game() {
+	std::cout << "Quitting..." << std::endl;
+	inMainMenu = false;
+	quit = true;
 }
 
 // MenuItem

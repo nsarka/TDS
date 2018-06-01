@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 
 #include "SDL2/SDL.h"
 
@@ -11,6 +12,7 @@
 extern Spritesheet* sheet;
 
 extern bool inMainMenu;
+extern bool quit;
 
 enum buttonState {
 	NORMAL = 0,
@@ -22,7 +24,7 @@ namespace buttonFuncs {
 	void start_singleplayer();
 	void start_multiplayer();
 	void options();
-	void exit();
+	void quit_game();
 }
 
 class MenuItem {
