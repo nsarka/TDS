@@ -38,5 +38,4 @@ Spritesheet::~Spritesheet() {
     {
 		SDL_DestroyTexture(itr->second);
     }
-	
 }

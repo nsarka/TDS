@@ -63,3 +63,64 @@ void Player::Draw(SDL_Renderer* renderer, Spritesheet* sheet) {
 		}
 	}
 }
+
+void Player::handleEvents(SDL_Event event) {
+
+	if( event.type == SDL_KEYDOWN ) {
+
+		if(event.key.keysym.sym == SDLK_w) {
+			SetMovingUp(true);
+			is_moving = true;
+		}
+
+		if(event.key.keysym.sym == SDLK_d) {
+			SetMovingRight(true);
+			is_moving = true;
+		}
+
+		if(event.key.keysym.sym == SDLK_s) {
+			SetMovingDown(true);
+			is_moving = true;
+		}
+
+		if(event.key.keysym.sym == SDLK_a) {
+			SetMovingLeft(true);
+			is_moving = true;
+		}
+
+		if(event.key.keysym.sym == SDLK_e) {
+			sound->playSound(std::string("energyshield"));
+		}
+	}
+	else if( event.type == SDL_KEYUP ) {
+
+		if(event.key.keysym.sym == SDLK_w) {
+			SetMovingUp(false);
+			is_moving = false;
+		}
+
+		if(event.key.keysym.sym == SDLK_d) {
+			SetMovingRight(false);
+			is_moving = false;
+		}
+
+		if(event.key.keysym.sym == SDLK_s) {
+			SetMovingDown(false);
+			is_moving = false;
+		}
+
+		if(event.key.keysym.sym == SDLK_a) {
+			SetMovingLeft(false);
+			is_moving = false;
+		}
+
+		switch( event.key.keysym.sym ) {
+			case SDLK_ESCAPE:
+			break;
+
+			default:
+			//std::cout << "Default key??" << std::endl;
+			break;
+		}
+	}
+}

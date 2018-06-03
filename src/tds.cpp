@@ -27,6 +27,7 @@
 #include "../include/level.h"
 #include "../include/editor.h"
 #include "../include/menu.h"
+#include "../include/sound.h"
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -48,6 +49,7 @@ Player* plyr = NULL;
 Editor* editor = NULL;
 Camera* cam = NULL;
 Menu* mainMenu = NULL;
+Sound* sound = NULL;
 
 int xMouse = 0, yMouse = 0;
 
@@ -81,6 +83,16 @@ int init() {
 
     // Set up camera
     cam = new Camera();
+
+    // Set up sound handler
+    sound = new Sound();
+
+    sound->loadMusic(std::string("../assets/d2sounds/music/jungle.wav"), std::string("jungle"));
+    sound->loadSound(std::string("../assets/d2sounds/skill/sorceress/energyshield.wav"), std::string("energyshield"));
+    sound->loadSound(std::string("../assets/d2sounds/skill/amazon/handofathena.wav"), std::string("handofathena"));
+
+    sound->printAllSoundsLoaded();
+    sound->printAllMusicLoaded();
 
     // Set up editor
     editor = new Editor();
@@ -145,28 +157,6 @@ void handleEvents() {
             yMouse = event.motion.y;
         } else if( event.type == SDL_KEYDOWN ) {
 
-            // Out of the switch to prevent some blockiness when rapidly switching keys
-            if(event.key.keysym.sym == SDLK_w) {
-                plyr->SetMovingUp(true);
-                plyr->is_moving = true;
-            }
-
-            if(event.key.keysym.sym == SDLK_d) {
-                plyr->SetMovingRight(true);
-                plyr->is_moving = true;
-            }
-
-            if(event.key.keysym.sym == SDLK_s) {
-                plyr->SetMovingDown(true);
-                plyr->is_moving = true;
-            }
-
-            if(event.key.keysym.sym == SDLK_a) {
-                plyr->SetMovingLeft(true);
-                plyr->is_moving = true;
-            }
-
-
             switch( event.key.keysym.sym ) {
                 case SDLK_ESCAPE:
                 inMainMenu = true;
@@ -197,38 +187,8 @@ void handleEvents() {
                 break;
             }
         }
-        else if( event.type == SDL_KEYUP ) {
 
-            if(event.key.keysym.sym == SDLK_w) {
-                plyr->SetMovingUp(false);
-                plyr->is_moving = false;
-            }
-
-            if(event.key.keysym.sym == SDLK_d) {
-                plyr->SetMovingRight(false);
-                plyr->is_moving = false;
-            }
-
-            if(event.key.keysym.sym == SDLK_s) {
-                plyr->SetMovingDown(false);
-                plyr->is_moving = false;
-            }
-
-            if(event.key.keysym.sym == SDLK_a) {
-                plyr->SetMovingLeft(false);
-                plyr->is_moving = false;
-            }
-
-            switch( event.key.keysym.sym ) {
-                case SDLK_ESCAPE:
-                break;
-
-                default:
-                //std::cout << "Default key??" << std::endl;
-                break;
-            }
-        }
-
+        plyr->handleEvents(event);
         editor->handleEvents(event);
     }
 }
@@ -241,6 +201,10 @@ void update() {
 
     cam->absoluteMoveCameraX(512 - 64 - (plyr->position.x));
     cam->absoluteMoveCameraY(384 - 64 - (plyr->position.y));
+
+    if(!sound->isMusicPlaying()) {
+        sound->playMusic(std::string("jungle"));
+    }
 }
 
 void render() {
@@ -278,6 +242,12 @@ void cleanUp() {
 
     // Free all textures
     sheet->~Spritesheet();
+
+    // Free all sounds
+    sound->~Sound();
+
+	// quit SDL_mixer
+	Mix_CloseAudio();
 
     // Free game font
     textHandler->~Text();

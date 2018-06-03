@@ -6,6 +6,9 @@ Editor::~Editor() {}
 void Editor::handleEvents(SDL_Event event) {
 
 	if( event.type == SDL_MOUSEBUTTONDOWN ) {
+
+		sound->playSound(std::string("handofathena"));
+
 		//If the left mouse button was released
 		if( event.button.button == SDL_BUTTON_LEFT ) {
 
