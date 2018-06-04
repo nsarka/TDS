@@ -5,7 +5,25 @@ Editor::~Editor() {}
 
 void Editor::handleEvents(SDL_Event event) {
 
-	if( event.type == SDL_MOUSEBUTTONDOWN ) {
+    if(event.type == SDL_MOUSEWHEEL)
+    {
+        if(event.wheel.y > 0) {
+			// Scroll Up
+			std::cout << "Next sprite..." << std::endl;
+			source_rect_counter++;
+			if(source_rect_counter >= (int)sourceRectList.size()) {
+				source_rect_counter = 0;
+			}
+        }
+        else if(event.wheel.y < 0) {
+			// Scroll Down
+			std::cout << "Previous sprite..." << std::endl;
+			source_rect_counter--;
+			if(source_rect_counter < 0) {
+				source_rect_counter = sourceRectList.size() - 1;
+			}
+        }
+	} else if( event.type == SDL_MOUSEBUTTONDOWN ) {
 		//If the left mouse button was released
 		if( event.button.button == SDL_BUTTON_LEFT ) {
 
