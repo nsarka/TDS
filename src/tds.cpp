@@ -26,6 +26,8 @@
 #include "../include/camera.h"
 #include "../include/level.h"
 #include "../include/editor.h"
+#include "../include/menu.h"
+#include "../include/sound.h"
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -33,6 +35,7 @@ const int FPS = 60;
 const int TICKS_PER_FRAME = 1000 / FPS;
 
 bool quit = false;
+bool inMainMenu = true;
 
 // SDL2 stuff
 SDL_Window* window = NULL;
@@ -45,6 +48,8 @@ std::vector<Entity*> gameEntities;
 Player* plyr = NULL;
 Editor* editor = NULL;
 Camera* cam = NULL;
+Menu* mainMenu = NULL;
+Sound* sound = NULL;
 
 int xMouse = 0, yMouse = 0;
 
@@ -79,6 +84,16 @@ int init() {
     // Set up camera
     cam = new Camera();
 
+    // Set up sound handler
+    sound = new Sound();
+
+    sound->loadMusic(std::string("../assets/d2sounds/music/jungle.wav"), std::string("jungle"));
+    sound->loadSound(std::string("../assets/d2sounds/skill/sorceress/energyshield.wav"), std::string("energyshield"));
+    sound->loadSound(std::string("../assets/d2sounds/skill/amazon/handofathena.wav"), std::string("handofathena"));
+
+    sound->printAllSoundsLoaded();
+    sound->printAllMusicLoaded();
+
     // Set up editor
     editor = new Editor();
         
@@ -91,6 +106,10 @@ int init() {
     // Set up spritesheet handler and load all spritesheets
     sheet = new Spritesheet(renderer);
     sheet->loadTexture(std::string("../assets/environment/darkdimension.png"), std::string("environment"));
+    sheet->loadTexture(std::string("../assets/menu/background.png"), std::string("mainmenu_background"));
+    sheet->loadTexture(std::string("../assets/menu/button.png"), std::string("button"));
+    sheet->loadTexture(std::string("../assets/menu/button_hover.png"), std::string("button_hover"));
+    sheet->loadTexture(std::string("../assets/menu/button_click.png"), std::string("button_click"));
 
     SDL_Rect p_pos = {1024/2, 768/2, 128, 128};
 
@@ -101,6 +120,26 @@ int init() {
     textHandler = new Text(std::string("../assets/font/m5x7.ttf"));
 
     sheet->printAllTexturesLoaded();
+
+    // Set up main menu
+    mainMenu = new Menu();
+
+    // Menu items
+    MenuItem start;
+	start.hoverSound            = std::string("button_hover");
+    start.clickSound            = std::string("button_click");
+    start.pos = {412, 384, 200, 100};
+    start.Click = buttonFuncs::start_singleplayer;
+
+    MenuItem quit;
+	quit.hoverSound            = std::string("button_hover");
+    quit.clickSound            = std::string("button_click");
+    quit.pos = {412, 584, 200, 100};
+    quit.Click = buttonFuncs::quit_game;
+
+    mainMenu->background_texture = std::string("mainmenu_background");
+    mainMenu->AddItem(start);
+    mainMenu->AddItem(quit);
 
 	return 0;
 }
@@ -118,30 +157,9 @@ void handleEvents() {
             yMouse = event.motion.y;
         } else if( event.type == SDL_KEYDOWN ) {
 
-            // Out of the switch to prevent some blockiness when rapidly switching keys
-            if(event.key.keysym.sym == SDLK_w) {
-                plyr->SetMovingUp(true);
-                plyr->is_moving = true;
-            }
-
-            if(event.key.keysym.sym == SDLK_d) {
-                plyr->SetMovingRight(true);
-                plyr->is_moving = true;
-            }
-
-            if(event.key.keysym.sym == SDLK_s) {
-                plyr->SetMovingDown(true);
-                plyr->is_moving = true;
-            }
-
-            if(event.key.keysym.sym == SDLK_a) {
-                plyr->SetMovingLeft(true);
-                plyr->is_moving = true;
-            }
-
-
             switch( event.key.keysym.sym ) {
                 case SDLK_ESCAPE:
+                inMainMenu = true;
                 break;
 
                 case SDLK_F1:
@@ -169,35 +187,8 @@ void handleEvents() {
                 break;
             }
         }
-        else if( event.type == SDL_KEYUP ) {
 
-            if(event.key.keysym.sym == SDLK_w) {
-                plyr->SetMovingUp(false);
-                plyr->is_moving = false;
-            }
-
-            if(event.key.keysym.sym == SDLK_d) {
-                plyr->SetMovingRight(false);
-                plyr->is_moving = false;
-            }
-
-            if(event.key.keysym.sym == SDLK_s) {
-                plyr->SetMovingDown(false);
-                plyr->is_moving = false;
-            }
-
-            if(event.key.keysym.sym == SDLK_a) {
-                plyr->SetMovingLeft(false);
-                plyr->is_moving = false;
-            }
-
-            switch( event.key.keysym.sym ) {
-                default:
-                //std::cout << "Default key??" << std::endl;
-                break;
-            }
-        }
-
+        plyr->handleEvents(event);
         editor->handleEvents(event);
     }
 }
@@ -210,6 +201,10 @@ void update() {
 
     cam->absoluteMoveCameraX(512 - 64 - (plyr->position.x));
     cam->absoluteMoveCameraY(384 - 64 - (plyr->position.y));
+
+    if(!sound->isMusicPlaying()) {
+        sound->playMusic(std::string("jungle"));
+    }
 }
 
 void render() {
@@ -248,6 +243,12 @@ void cleanUp() {
     // Free all textures
     sheet->~Spritesheet();
 
+    // Free all sounds
+    sound->~Sound();
+
+	// quit SDL_mixer
+	Mix_CloseAudio();
+
     // Free game font
     textHandler->~Text();
 
@@ -263,6 +264,16 @@ int main( int argc, char* args[] ) {
     Timer fps;
     fps.start();
 
+mainmenu_label:
+    while(inMainMenu && !quit) {
+        count++;
+        mainMenu->HandleEvents();
+        mainMenu->Draw(renderer);
+
+        // Wait till 60 fps
+        fps.waitFPS(TICKS_PER_FRAME);
+    }
+
     while(!quit) {
 
         // Update game debug text
@@ -276,8 +287,13 @@ int main( int argc, char* args[] ) {
 
         // Wait till 60 fps
         fps.waitFPS(TICKS_PER_FRAME);
+
+        if(inMainMenu) {
+            goto mainmenu_label;
+        }
     }
 
     cleanUp();
+
     return 0;
 }

@@ -19,6 +19,7 @@ extern class Camera* cam;
 extern class Player* plyr;
 extern class std::vector<Entity*> gameEntities;
 extern class Spritesheet* sheet;
+extern class Sound* sound;
 
 class Editor {
     public:

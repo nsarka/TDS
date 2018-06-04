@@ -1,7 +1,10 @@
 #pragma once
 
 #include "entity.h"
+#include "sound.h"
 #include <sstream>
+
+extern class Sound* sound;
 
 // Zero indexed, so there's 4 frames 0-3
 #define MAX_PLAYER_FRAMES 3
@@ -12,6 +15,7 @@ class Player: public Entity {
 		~Player();
 
         void Draw(SDL_Renderer* renderer, Spritesheet* sheet);
+        void handleEvents(SDL_Event event);
 
         void SetMovingRight(bool val) { movingRight = val; };
         void SetMovingLeft(bool val) { movingLeft = val; };
