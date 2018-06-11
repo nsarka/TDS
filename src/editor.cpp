@@ -24,8 +24,17 @@ void Editor::handleEvents(SDL_Event event) {
 			}
         }
 	} else if( event.type == SDL_MOUSEBUTTONDOWN ) {
-		//If the left mouse button was released
-		if( event.button.button == SDL_BUTTON_LEFT ) {
+		// Check if physics mode is on
+		if( event.button.button == SDL_BUTTON_LEFT && colliderMode ) {
+			if(event.button.state == SDL_PRESSED) {
+				pointDown.x = xMouse - cam->getOffsetX();
+				pointDown.y = yMouse - cam->getOffsetY();
+				buttonDown = true;
+				std::cout << pointDown.x << std::endl;
+				std::cout << pointDown.y << std::endl;
+			}
+		}
+		if( event.button.button == SDL_BUTTON_LEFT && !colliderMode) {
 
 			int xPos = event.button.x - cam->getOffsetX();
 			int yPos = event.button.y - cam->getOffsetY();
@@ -51,7 +60,7 @@ void Editor::handleEvents(SDL_Event event) {
 			t->animCycle.push_back(sourceRectList.at(source_rect_counter));
 
 			gameEntities.push_back(t);
-		} else {
+		} else if(!colliderMode) {
 			SDL_Rect tile_rect = { (event.button.x-64) - cam->getOffsetX(), (event.button.y-64) - cam->getOffsetY(), 128, 128 };
 
 			Tile* t = new Tile("environment", tile_rect, 0);
@@ -60,7 +69,21 @@ void Editor::handleEvents(SDL_Event event) {
 
 			gameEntities.push_back(t);
 		}
-	} else if( event.type == SDL_KEYDOWN ) {
+	//If the left mouse button was released
+	} else if( event.type == SDL_MOUSEBUTTONUP) {
+		// Check if physics mode is on
+		if( event.button.button == SDL_BUTTON_LEFT && colliderMode ) {
+			if(event.button.state == SDL_RELEASED) {
+				pointUp.x = xMouse - cam->getOffsetX();
+				pointUp.y = yMouse - cam->getOffsetY();
+				buttonDown = false;
+				std::cout << pointUp.x << std::endl;
+				std::cout << pointUp.y << std::endl;
+				Physics::setCollisionRect(pointDown, pointUp);
+			}
+		}
+	} 
+	else if( event.type == SDL_KEYDOWN ) {
 		switch( event.key.keysym.sym ) {
 
 			case SDLK_UP:
@@ -77,6 +100,20 @@ void Editor::handleEvents(SDL_Event event) {
 			if(source_rect_counter < 0) {
 				source_rect_counter = sourceRectList.size() - 1;
 			}
+			break;
+
+			case SDLK_F5:
+			drawCol = !drawCol;
+			if(drawCol)
+            	std::cout << "Drawing colliders..." << std::endl;
+            break;
+
+			case SDLK_p:
+			colliderMode = !colliderMode;
+			if(colliderMode)
+				std::cout << "Collider mode ON..." << std::endl;
+			else
+				std::cout << "Collider mode OFF..." << std::endl;
 			break;
 
 			default:
@@ -110,6 +147,23 @@ void Editor::drawGrid(SDL_Renderer* renderer) {
         }
     }
 
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+}
+
+void Editor::drawColliders(SDL_Renderer* renderer) {
+    SDL_SetRenderDrawColor(renderer, 0, 255, 255, 0);
+
+    for(auto col : collisionEntities) {
+
+		SDL_Rect* rect = new SDL_Rect();
+
+		rect->x = col->x + cam->getOffsetX();
+		rect->y = col->y + cam->getOffsetY();
+		rect->w = col->w;
+		rect->h = col->h;
+
+		SDL_RenderDrawRect(renderer, rect);
+	}
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 }
 

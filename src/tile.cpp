@@ -150,3 +150,4 @@ void Tile::move(int x, int y) {
 	position.x += x;
 	position.y += y;
 }
+

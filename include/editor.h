@@ -14,12 +14,16 @@
 #include "camera.h"
 #include "player.h"
 #include "tile.h"
+#include "physics.h"
 
 extern class Camera* cam;
 extern class Player* plyr;
 extern class std::vector<Entity*> gameEntities;
+extern class std::vector<SDL_Rect*> collisionEntities;
 extern class Spritesheet* sheet;
 extern class Sound* sound;
+extern int xMouse, yMouse;
+extern bool drawCol;
 
 class Editor {
     public:
@@ -33,6 +37,7 @@ class Editor {
 
 		void handleEvents(SDL_Event event);
 		void drawGrid(SDL_Renderer* renderer);
+		void drawColliders(SDL_Renderer* renderer);
 		void drawSelected(SDL_Renderer* renderer, int x, int y);
 		void loadSprites();
 		void Deserialize(std::string data);
@@ -44,6 +49,9 @@ class Editor {
         //SDL_Rect sheet_source_rect = { 32, 16, 16, 16 };
 
 		int source_rect_counter = 0;
+		bool buttonDown = true;
+		bool colliderMode = false;
+		SDL_Point pointDown, pointUp;
 		std::vector<SDL_Rect> sourceRectList;
 		std::string spr_sheet_name = "environment";
 };

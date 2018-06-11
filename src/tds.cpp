@@ -45,6 +45,7 @@ SDL_Renderer* renderer = NULL;
 Spritesheet* sheet = NULL;
 Text* textHandler = NULL;
 std::vector<Entity*> gameEntities;
+std::vector<SDL_Rect*> collisionEntities;
 Player* plyr = NULL;
 Editor* editor = NULL;
 Camera* cam = NULL;
@@ -57,6 +58,7 @@ int xMouse = 0, yMouse = 0;
 char buffer [128];
 int count = 0;
 bool drawFPS = true;
+bool drawCol = false;
 
 int init() {
     if( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
@@ -227,6 +229,10 @@ void render() {
         editor->drawGrid(renderer);
         textHandler->DrawTextToScreen(renderer, std::string(buffer));
         editor->drawSelected(renderer, xMouse, yMouse);
+    }
+
+    if(drawCol) {
+        editor->drawColliders(renderer);
     }
 
     // Draw to screen

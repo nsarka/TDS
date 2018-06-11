@@ -17,3 +17,14 @@ bool Physics::checkMouseCollision(SDL_Rect ent, SDL_Point point) {
 	}
 	return false;
 }
+
+void Physics::setCollisionRect(SDL_Point point1, SDL_Point point2) {
+	SDL_Rect* collisionRect;
+	collisionRect = new SDL_Rect();
+	collisionRect->x = point1.x;
+	collisionRect->y = point1.y;
+	collisionRect->w = point2.x - point1.x;
+	collisionRect->h = point2.y - point1.y;
+
+	collisionEntities.push_back(collisionRect);
+}

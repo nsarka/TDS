@@ -31,7 +31,8 @@ void Sound::loadSound(std::string path, std::string name) {
 }
 
 void Sound::playMusic(std::string name) {
-	Mix_PlayMusic(music_list[name], -1);
+	Mix_Volume(0, MIX_MAX_VOLUME/2);
+	//Mix_PlayMusic(music_list[name], -1);
 }
 
 void Sound::loadMusic(std::string path, std::string name) {
