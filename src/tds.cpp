@@ -174,6 +174,7 @@ void handleEvents() {
                 std::cin >> levelname;
                 std::cout << "Saving level '" << levelname << "' ..." << std::endl;
                 Level::saveLevel(levelname, gameEntities);
+                Level::saveLevelColliders(levelname, collisionEntities);
                 levelname = "";
                 break;
 
@@ -181,6 +182,7 @@ void handleEvents() {
                 std::cout << "Enter Level Name: ";
                 std::cin >> levelname;
                 Level::loadLevel(levelname, &gameEntities);
+                Level::loadLevelColliders(levelname, &collisionEntities);
                 levelname = "";
                 break;
 

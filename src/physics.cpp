@@ -28,3 +28,38 @@ void Physics::setCollisionRect(SDL_Point point1, SDL_Point point2) {
 
 	collisionEntities.push_back(collisionRect);
 }
+
+std::string Physics::serializeColliders(SDL_Rect* rect) {
+	std::stringstream ss;
+
+	ss << rect->x << ",";
+	ss << rect->y << ",";
+	ss << rect->w << ",";
+	ss << rect->h << ",";
+
+	return ss.str();
+}
+
+void Physics::deserializeColliders(std::string lineData, SDL_Rect* col) {
+	std::stringstream ss;
+	ss << lineData;
+	std::queue<std::string> readData;
+
+	while(ss.good()) {
+		std::string substr;
+		getline(ss, substr, ',');
+		readData.push(substr);
+	}
+
+	col->x 			= atoi(readData.front().c_str());
+	readData.pop();
+
+	col->y 			= atoi(readData.front().c_str());
+	readData.pop();
+
+	col->w 			= atoi(readData.front().c_str());
+	readData.pop();
+
+	col->h 			= atoi(readData.front().c_str());
+	readData.pop();
+}

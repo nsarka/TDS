@@ -45,3 +45,49 @@ void Level::loadLevel(std::string levelname, std::vector<Entity*> * gameEntities
         std::cout << "[!] Couldn't open " << levelname << ".level" << std::endl;
     }
 }
+
+void Level::saveLevelColliders(std::string levelname, std::vector<SDL_Rect*> collisionEntities) {
+    std::ofstream physics_file;
+    physics_file.open(levelname + ".physics");
+    physics_file << levelname << std::endl;
+
+    for (auto col : collisionEntities) {
+        physics_file << Physics::serializeColliders(col) << std::endl;
+    }
+
+    physics_file.close();
+
+    std::cout << "Saved." << std::endl;
+}
+
+void Level::loadLevelColliders(std::string levelname, std::vector<SDL_Rect*> * collisionEntities) {
+
+    std::cout << "Opening " << levelname << "..." << std::endl;
+
+    std::ifstream physics_file;
+    physics_file.open(levelname + ".physics");
+
+    if (physics_file.is_open()) {
+
+        getline(physics_file, levelname);
+
+        std::string data;
+
+        collisionEntities->clear();
+        
+        while(!physics_file.eof()) {
+
+            SDL_Rect *col = new SDL_Rect();
+
+            getline(physics_file, data);
+
+            if(data.length() > 0) {
+                Physics::deserializeColliders(data, col);
+                collisionEntities->push_back(col);
+            }
+        }
+
+    } else {
+        std::cout << "[!] Couldn't open " << levelname << ".level" << std::endl;
+    }
+}

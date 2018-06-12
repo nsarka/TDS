@@ -2,6 +2,7 @@
 
 #include "entity.h"
 #include "tile.h"
+#include "physics.h"
 
 #include <iostream>
 #include <fstream>
@@ -15,4 +16,6 @@ class Level {
     public:
         static void saveLevel(std::string levelname, std::vector<Entity*> gameEntities);
         static void loadLevel(std::string levelname, std::vector<Entity*> * gameEntities);
+        static void saveLevelColliders(std::string levelname, std::vector<SDL_Rect*> collisionEntities);
+        static void loadLevelColliders(std::string levelname, std::vector<SDL_Rect*> * collisionEntities);
 };
