@@ -5,6 +5,12 @@ Player::Player(Spritesheet* sheet, std::string spr_path, int pclass, SDL_Rect po
 	spr_sheet_name = std::string("player");
 	player_class = pclass;
 	position = pos;
+	hitbox = new SDL_Rect();
+	hitbox->x = position.x + 32;
+	hitbox->y = position.y + 85; 
+	hitbox->w = 72;
+	hitbox->h = 40;
+
 	sheet->loadTexture(spr_path, spr_sheet_name);
 
 	for(int i = 0; i <= MAX_PLAYER_FRAMES; i++) {
@@ -19,20 +25,35 @@ Player::~Player() {
 
 void Player::Update() {
 
-	if(movingRight) {
+	SDL_Rect testPos = *hitbox;
+
+	testPos.x += 5;
+
+	if(movingRight && !collision(testPos)) {
 		position.x += 5;
+		hitbox->x += 5;
 	}
 
-	if(movingLeft) {
+	testPos.x -= 10;
+
+	if(movingLeft && !collision(testPos)) {
 		position.x -= 5;
+		hitbox->x -= 5;
 	}
 
-	if(movingUp) {
+	testPos.x += 5;
+	testPos.y -= 5;
+
+	if(movingUp && !collision(testPos)) {
 		position.y -= 5;
+		hitbox->y -= 5;
 	}
+
+	testPos.y += 10;
 	
-	if(movingDown) {
+	if(movingDown && !collision(testPos)) {
 		position.y += 5;
+		hitbox->y += 5;
 	}
 }
 
@@ -123,4 +144,27 @@ void Player::handleEvents(SDL_Event event) {
 			break;
 		}
 	}
+}
+
+bool Player::collision(SDL_Rect pos) {
+	bool isCollision = false;
+	for(auto col : collisionEntities) {
+		if((isCollision = Physics::checkCollision(&pos, col))) {
+			break;
+		}
+	}
+	return isCollision;
+}
+
+void Player::drawHitBox(SDL_Renderer* renderer) {
+	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0);
+
+	SDL_Rect* playerbox = new SDL_Rect();
+	playerbox->x = hitbox->x + cam->getOffsetX();
+	playerbox->y = hitbox->y + cam->getOffsetY();
+	playerbox->w = hitbox->w;
+	playerbox->h = hitbox->h; 
+
+	SDL_RenderDrawRect(renderer, playerbox);
+	
 }

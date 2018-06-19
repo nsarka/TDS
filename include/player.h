@@ -1,10 +1,12 @@
 #pragma once
 
 #include "entity.h"
+#include "physics.h"
 #include "sound.h"
 #include <sstream>
 
 extern class Sound* sound;
+extern class std::vector<SDL_Rect*> collisionEntities;
 
 // Zero indexed, so there's 4 frames 0-3
 #define MAX_PLAYER_FRAMES 3
@@ -22,19 +24,22 @@ class Player: public Entity {
         void SetMovingUp(bool val) { movingUp = val; };
         void SetMovingDown(bool val) { movingDown = val; };
 
+        // bool GetMovingRight() { return movingRight; };
+        // bool GetMovingLeft() { return movingLeft; };
+        // bool GetMovingUp() { return movingUp; };
+        // bool GetMovingDown() { return movingDown; };
+
         std::string Serialize() { return std::string(""); };
         void Deserialize(std::string data){};
         void Update();
+        void drawHitBox(SDL_Renderer* renderer);
+        bool collision(SDL_Rect pos);
         
         SDL_Rect position;
 
+        SDL_Rect* hitbox;
+
         bool is_moving = false;
-
-        struct Vector2 {
-            float x, y;
-        };
-
-        Vector2 playerMovement;
 
     private:
 

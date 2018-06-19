@@ -235,6 +235,7 @@ void render() {
 
     if(drawCol) {
         editor->drawColliders(renderer);
+        plyr->drawHitBox(renderer);
     }
 
     // Draw to screen
