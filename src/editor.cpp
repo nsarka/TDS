@@ -116,6 +116,16 @@ void Editor::handleEvents(SDL_Event event) {
 				std::cout << "Collider mode OFF..." << std::endl;
 			break;
 
+			case SDLK_BACKSPACE:
+			if(colliderMode) {
+				std::cout << "Deleting collider..." << std::endl;
+				collisionEntities.pop_back();
+			}
+			else {
+				std::cout << "Deleting tile..." << std::endl;
+				gameEntities.pop_back();
+			}
+
 			default:
 			//std::cout << "Default key??" << std::endl;
 			break;
