@@ -12,8 +12,8 @@ class Text {
 		~Text();
 
 		SDL_Texture* SurfaceToTexture(SDL_Renderer* renderer, SDL_Surface* surf);
-		SDL_Texture* RenderText(SDL_Renderer* renderer, std::string text);
-        void DrawTextToScreen(SDL_Renderer* renderer, std::string text);
+		SDL_Texture* CreateTextTexture(SDL_Renderer* renderer, std::string text);
+        void DrawTextToScreen(SDL_Renderer* renderer, std::string text, SDL_Rect position);
 
         // Where to draw the fps counter
         SDL_Rect fps = {0, 0, 128, 128};

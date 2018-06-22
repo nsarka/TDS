@@ -229,7 +229,7 @@ void render() {
 
     if(drawFPS) {
         editor->drawGrid(renderer);
-        textHandler->DrawTextToScreen(renderer, std::string(buffer));
+        textHandler->DrawTextToScreen(renderer, std::string(buffer), textHandler->fps);
         editor->drawSelected(renderer, xMouse, yMouse);
     }
 

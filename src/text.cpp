@@ -11,20 +11,24 @@ Text::~Text() {
 	TTF_CloseFont(font);
 }
 
-void Text::DrawTextToScreen(SDL_Renderer* renderer, std::string text) {
+void Text::DrawTextToScreen(SDL_Renderer* renderer, std::string text, SDL_Rect position) {
 	SDL_Texture* fps_texture;
-    int w, h;
-    TTF_SizeText(font, text.c_str(), &w, &h);
-    fps.w = w;
-    fps.h = h;
-    fps_texture = RenderText(renderer, text.c_str());
 
-	SDL_RenderCopy(renderer, fps_texture, NULL, &fps);
+    int w, h;
+
+    TTF_SizeText(font, text.c_str(), &w, &h);
+
+    position.w = w;
+    position.h = h;
+	
+    fps_texture = CreateTextTexture(renderer, text.c_str());
+
+	SDL_RenderCopy(renderer, fps_texture, NULL, &position);
 
     SDL_DestroyTexture(fps_texture);
 }
 
-SDL_Texture* Text::RenderText(SDL_Renderer* renderer, std::string text)
+SDL_Texture* Text::CreateTextTexture(SDL_Renderer* renderer, std::string text)
 {
 	SDL_Color textColor = { 255, 255, 255, 255 }; // white
 	SDL_Texture* solidTexture;
