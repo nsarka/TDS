@@ -17,10 +17,32 @@ bool Physics::checkMouseCollision(SDL_Rect ent, SDL_Point point) {
 void Physics::setCollisionRect(SDL_Point point1, SDL_Point point2) {
 	SDL_Rect* collisionRect;
 	collisionRect = new SDL_Rect();
-	collisionRect->x = point1.x;
-	collisionRect->y = point1.y;
-	collisionRect->w = point2.x - point1.x;
-	collisionRect->h = point2.y - point1.y;
+	if(point1.x <= point2.x) {
+		if(point1.y <= point2.y) {
+			collisionRect->x = point1.x;
+			collisionRect->y = point1.y;
+			collisionRect->w = point2.x - point1.x;
+			collisionRect->h = point2.y - point1.y;
+		} else if(point1.y > point2.y) {
+			collisionRect->x = point1.x;
+			collisionRect->w = point2.x - point1.x;
+			collisionRect->h = point1.y - point2.y;
+			collisionRect->y = point1.y - collisionRect->h;
+		}
+	} else if(point1.x > point2.x) {
+		if(point1.y <= point2.y) {
+			collisionRect->y = point1.y;
+			collisionRect->w = point1.x - point2.x;
+			collisionRect->h = point2.y - point1.y;
+			collisionRect->x = point1.x - collisionRect->w;
+		} else if(point1.y > point2.y) {
+			collisionRect->w = point1.x - point2.x;
+			collisionRect->h = point1.y - point2.y;
+			collisionRect->x = point1.x - collisionRect->w;
+			collisionRect->y = point1.y - collisionRect->h;
+		}
+	}
+	
 
 	collisionEntities.push_back(collisionRect);
 }

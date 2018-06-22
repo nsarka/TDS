@@ -62,7 +62,7 @@ void Level::saveLevelColliders(std::string levelname, std::vector<SDL_Rect*> col
 
 void Level::loadLevelColliders(std::string levelname, std::vector<SDL_Rect*> * collisionEntities) {
 
-    std::cout << "Opening " << levelname << "..." << std::endl;
+    std::cout << "Opening " << levelname << " colliders..." << std::endl;
 
     std::ifstream physics_file;
     physics_file.open(levelname + ".physics");
@@ -88,6 +88,6 @@ void Level::loadLevelColliders(std::string levelname, std::vector<SDL_Rect*> * c
         }
 
     } else {
-        std::cout << "[!] Couldn't open " << levelname << ".level" << std::endl;
+        std::cout << "[!] Couldn't open " << levelname << ".physics" << std::endl;
     }
 }
