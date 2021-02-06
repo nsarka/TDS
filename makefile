@@ -1,12 +1,12 @@
 IDIR=./include
 CC=g++
-CFLAGS=-Wall -g
+CFLAGS=-Wall -g -std=c++11
 
 ODIR=./src/obj
 LDIR=./lib
 BDIR=./bin
 
-LIBS=-lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_net -lSDL2_ttf
+LIBS=-lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_net -lSDL2_ttf
 
 MKDIR_P=mkdir -p
 
